@@ -1,0 +1,3404 @@
+基础重置
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    padding-top: 80px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 导航栏 */
+.navbar {
+    background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.nav-logo i {
+    font-size: 1.8rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: rgba(255,255,255,0.2);
+}
+
+#searchTrigger.active {
+    background: rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.favorites-count,
+.compare-count,
+.compare-badge {
+    background: #ff9800;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+.compare-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff5722;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* 搜索覆盖层 */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 80px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.search-overlay.show {
+    display: flex;
+}
+
+/* 搜索模态框 */
+.search-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.search-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.search-modal-header h3 {
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.search-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.search-modal-body {
+    padding: 2rem;
+}
+
+/* 搜索框样式调整 */
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 15px 20px 15px 50px;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    background: #f9f9f9;
+}
+
+.search-box input:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.search-box i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4caf50;
+    font-size: 1.2rem;
+    z-index: 1;
+}
+
+.search-box button {
+    padding: 15px 30px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s;
+    min-width: 100px;
+}
+
+.search-box button:hover {
+    background: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+/* 搜索过滤器 */
+.search-filters {
+    margin-bottom: 1.5rem;
+}
+
+.filter-group {
+    margin-bottom: 1rem;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-tag {
+    padding: 6px 16px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.filter-tag:hover {
+    background: #e0e0e0;
+}
+
+.filter-tag.active {
+    background: #4caf50;
+    color: white;
+    border-color: #4caf50;
+}
+
+/* 热门关键词 */
+.search-hot-keywords {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.search-hot-keywords label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.keyword-tag {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.keyword-tag:hover {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
+    transform: translateY(-1px);
+}
+
+/* 搜索帮助 */
+.search-help {
+    margin-top: 1.5rem;
+    padding: 0.75rem;
+    background: #fff3e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-help i {
+    color: #ff9800;
+}
+
+.search-help kbd {
+    background: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-family: monospace;
+    margin: 0 2px;
+}
+
+/* 对比工具栏 */
+.compare-toolbar {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 2px solid #ff9800;
+    box-shadow: 0 3px 10px rgba(255, 152, 0, 0.1);
+}
+
+.compare-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.compare-header h3 {
+    color: #ff9800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.compare-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: #388e3c;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.compare-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 40px;
+}
+
+.compare-item {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #ff9800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.remove-compare {
+    background: none;
+    border: none;
+    color: #ff5722;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.remove-compare:hover {
+    background: #ffebee;
+}
+
+/* 主内容区 */
+.main-content {
+    padding: 2rem 0;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+    border-radius: 12px;
+}
+
+.page-header h1 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    min-width: 180px;
+    justify-content: center;
+}
+
+.stat-item i {
+    color: #4caf50;
+    font-size: 1.2rem;
+}
+
+/* 病害网格 */
+.disease-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.disease-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.disease-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.disease-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+    position: relative;
+}
+
+.disease-header h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    padding-right: 40px;
+}
+
+.crop-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.disease-body {
+    padding: 1.5rem;
+}
+
+.disease-symptoms {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.disease-image-container {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.disease-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.disease-image.loaded {
+    opacity: 1;
+}
+
+.disease-image-placeholder {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    background: #f0f0f0;
+}
+
+.disease-image-placeholder i {
+    font-size: 2rem;
+    color: #ddd;
+}
+
+.disease-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    padding: 4px 10px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.disease-footer {
+    padding: 1rem 1.5rem;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-details {
+    color: #4caf50;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.view-details:hover {
+    text-decoration: underline;
+}
+
+.severity {
+    font-size: 0.85rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.severity.high { background: #ffebee; color: #c62828; }
+.severity.medium { background: #fff3e0; color: #ef6c00; }
+.severity.low { background: #e8f5e9; color: #2e7d32; }
+
+/* 卡片操作按钮 */
+.card-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 5px;
+}
+
+.card-action-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #666;
+}
+
+.card-action-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.card-action-btn.active {
+    color: #ff9800;
+    background: white;
+}
+
+.card-action-btn.compare-active {
+    color: #4caf50;
+    background: white;
+}
+
+/* 模态框 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalFade 0.3s;
+}
+
+.compare-modal-content {
+    max-width: 1200px;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.modal-close:hover {
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.disease-detail-section {
+    margin-bottom: 2rem;
+}
+
+.disease-detail-section h3 {
+    color: #2e7d32;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e8f5e9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid #4caf50;
+}
+
+.detail-item strong {
+    color: #555;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* 项目信息 */
+.project-info {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+    border-radius: 12px;
+}
+
+.project-info h2 {
+    text-align: center;
+    color: #2e7d32;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card i {
+    font-size: 2rem;
+    color: #4caf50;
+    margin-bottom: 1rem;
+}
+
+.info-card h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-card p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* 回到顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.back-to-top.show {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background: #388e3c;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* 页脚 */
+.footer {
+    background: #2e7d32;
+    color: white;
+    padding: 3rem 0 1rem;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-section p {
+    margin-bottom: 0.5rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.footer-section kbd {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+}
+
+/* 加载动画 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.loading-content {
+    text-align: center;
+    padding: 2rem;
+    max-width: 400px;
+}
+
+.loading-logo {
+    font-size: 3rem;
+    color: #4caf50;
+    margin-bottom: 1rem;
+    animation: bounce 1.5s infinite;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+.loading-text {
+    color: #666;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+}
+
+.loading-dots {
+    display: inline-block;
+    width: 20px;
+    text-align: left;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+.loading-progress {
+    width: 200px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: 1rem auto;
+    overflow: hidden;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: #4caf50;
+    border-radius: 2px;
+    animation: progress 2s ease-in-out;
+}
+
+.loading-tips {
+    margin-top: 1rem;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* 对比表格 */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.compare-table th,
+.compare-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #eee;
+    vertical-align: top;
+}
+
+.compare-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+    min-width: 150px;
+}
+
+.compare-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.compare-table tr:hover {
+    background: #f0f0f0;
+}
+
+.compare-table .highlight {
+    background: #e8f5e9;
+}
+
+.compare-table .warning {
+    background: #fff3e0;
+}
+
+/* 空状态 */
+.no-results,
+.empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-results i,
+.empty-state i {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+/* 键盘快捷键提示 */
+.shortcut-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: none;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+}
+
+.shortcut-hint.show {
+    display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #2e7d32;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .stat-item {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .disease-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-overlay {
+        padding-top: 60px;
+        align-items: flex-start;
+    }
+    
+    .search-modal {
+        width: 95%;
+        max-height: 70vh;
+        margin: 10px;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-box button {
+        width: 100%;
+    }
+    
+    .search-modal-header {
+        padding: 1rem;
+    }
+    
+    .search-modal-body {
+        padding: 1.5rem;
+    }
+    
+    .compare-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .compare-actions {
+        width: 100%;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        flex: 1;
+    }
+    
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .modal-content,
+    .compare-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .page-header {
+        padding: 1.5rem;
+    }
+    
+    .disease-card {
+        margin: 0 5px;
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .footer-section h3 {
+        justify-content: center;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .navbar,
+    .search-overlay,
+    .footer,
+    .mobile-menu-btn,
+    .back-to-top,
+    .compare-toolbar,
+    .card-actions,
+    .modal-header,
+    .modal-close,
+    .compare-actions {
+        display: none !important;
+    }
+    
+    .disease-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+    }
+    
+    body {
+        padding-top: 0;
+        background: white;
+    }
+    
+    .disease-header {
+        background: #f5f5f5 !important;
+        color: #333 !important;
+    }
+
+    .modal {
+        position: static;
+        display: block;
+        background: white;
+        box-shadow: none;
+    }
+
+    .modal-content {
+        max-height: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .compare-table th,
+    .compare-table td {
+    border: 1px solid #ddd !important;
+    }
+
+        body {
+        padding-top: 0;
+        background: white;
+    }
+    
+    .compare-table-container {
+        break-inside: avoid;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* 病原类型标签 */
+.pathogen-type-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.pathogen-type-tag.真菌 {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.pathogen-type-tag.细菌 {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #e1bee7;
+}
+
+.pathogen-type-tag.病毒 {
+    background: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+/* 详情页新样式 */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.structured-symptoms {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #4caf50;
+}
+
+.symptoms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.symptom-category {
+    padding: 8px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.symptom-category strong {
+    color: #555;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.symptom-category span {
+    color: #333;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.pesticides-table {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.pesticides-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.pesticides-table th {
+    background: #4caf50;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.pesticides-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.pesticides-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.pesticides-table tr:hover {
+    background: #f0f0f0;
+}
+
+.agricultural-control ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.agricultural-control li {
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+}
+
+.agricultural-control li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.epidemiology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.epidemiology-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.epidemiology-item strong {
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.accuracy-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.related-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.related-tag {
+    padding: 6px 12px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid #c8e6c9;
+}
+
+.related-tag:hover {
+    background: #c8e6c9;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 快捷键提示样式增强 */
+.shortcut-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+    max-width: 300px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-left: 4px solid #4caf50;
+}
+
+.shortcut-hint.show {
+    display: block;
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .symptoms-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .epidemiology-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pesticides-table {
+        font-size: 0.8rem;
+    }
+    
+    .pesticides-table th,
+    .pesticides-table td {
+        padding: 8px 10px;
+    }
+    
+    .structured-symptoms {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .disease-tags {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .tag {
+        margin-bottom: 5px;
+    }
+    
+    .shortcut-hint {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+/* 打印优化 */
+@media print {
+    .card-actions,
+    .related-tag,
+    .btn-primary,
+    .shortcut-hint {
+        display: none !important;
+    }
+    
+    .disease-detail-section {
+        break-inside: avoid;
+    }
+}
+
+/* 搜索建议样式 */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestions-section {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions-section:last-child {
+    border-bottom: none;
+}
+
+.suggestions-header {
+    padding: 8px 15px;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+}
+
+.suggestion-item:hover {
+    background: #f5f5f5;
+}
+
+.suggestion-item.popular {
+    color: #ff4757;
+}
+
+.suggestion-item.history {
+    color: #666;
+}
+
+.suggestion-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion-content small {
+    color: #888;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.suggestion-item.empty {
+    color: #999;
+    justify-content: center;
+    cursor: default;
+}
+
+.suggestion-item.empty:hover {
+    background: transparent;
+}
+
+.remove-suggestion {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.remove-suggestion:hover {
+    background: #ff4757;
+    color: white;
+}
+
+/* 知识图谱样式 */
+.knowledge-graph-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
+.knowledge-graph-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.knowledge-graph-section h3 i {
+    color: #6a11cb;
+}
+
+.graph-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #6a11cb;
+    border-radius: 6px;
+    color: #6a11cb;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    background: #6a11cb;
+    color: white;
+}
+
+.graph-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-color.disease {
+    background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+}
+
+.legend-color.pathogen {
+    background: linear-gradient(135deg, #2ed573 0%, #7bed9f 100%);
+}
+
+.legend-color.crop {
+    background: linear-gradient(135deg, #3742fa 0%, #5352ed 100%);
+}
+
+.legend-color.pesticide {
+    background: linear-gradient(135deg, #ffa502 0%, #ffbe76 100%);
+}
+
+.legend-color.related {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.knowledge-graph-container {
+    width: 100%;
+    height: 400px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 图谱加载状态 */
+.graph-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    font-size: 14px;
+}
+
+.graph-loading i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #6a11cb;
+    animation: graphLoading 1.5s infinite;
+}
+
+@keyframes graphLoading {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 图谱节点详细信息弹窗 */
+.graph-node-detail {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 2000;
+    padding: 25px;
+    display: none;
+}
+
+.graph-node-detail.active {
+    display: block;
+    animation: nodeDetailIn 0.3s ease;
+}
+
+@keyframes nodeDetailIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.graph-node-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    display: none;
+}
+
+.graph-node-detail-overlay.active {
+    display: block;
+}
+
+.graph-node-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f2f6;
+}
+
+.graph-node-detail-title {
+    margin: 0;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.graph-node-detail-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.graph-node-detail-close:hover {
+    background: #f1f2f6;
+    color: #ff4757;
+}
+
+.graph-node-detail-content {
+    line-height: 1.6;
+}
+
+.graph-node-detail-content p {
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.graph-node-detail-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.pesticide-detail,
+.pathogen-detail,
+.crop-detail {
+    padding: 10px 0;
+}
+
+.related-diseases-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.related-disease-tag {
+    background: #f1f2f6;
+    border: 1px solid #6a11cb;
+    border-radius: 15px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #6a11cb;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.related-disease-tag:hover {
+    background: #6a11cb;
+    color: white;
+    transform: translateY(-2px);
+}
+/* 收藏页面空状态样式 */
+.no-results {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-results i {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+.no-results h3 {
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.no-results p {
+    color: #777;
+    margin-bottom: 1.5rem;
+}
+/* 在 style.css 中添加以下样式 */
+
+/* 收藏按钮样式 */
+.favorite-btn {
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover {
+    color: #ff9800;
+    background: rgba(255, 255, 255, 0.95);
+    transform: scale(1.1);
+}
+
+.favorite-btn.active {
+    color: #ff9800;
+    background: white;
+    animation: favoritePulse 0.5s ease;
+}
+
+@keyframes favoritePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.favorite-btn.active::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    background: #ff9800;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* 卡片操作按钮通用样式 */
+.card-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 5px;
+    z-index: 2;
+}
+
+.card-action-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #666;
+    position: relative;
+}
+
+.card-action-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 收藏页面空状态 */
+.favorites-empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.favorites-empty i {
+    font-size: 4rem;
+    color: #ffd700;
+    margin-bottom: 1.5rem;
+    opacity: 0.3;
+}
+
+.favorites-empty h3 {
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.favorites-empty p {
+    color: #777;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* 收藏页面标题样式 */
+.favorites-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.favorites-header i {
+    color: #ff9800;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .favorites-empty {
+        padding: 3rem 1rem;
+    }
+    
+    .favorites-empty i {
+        font-size: 3rem;
+    }
+    
+    .favorites-empty h3 {
+        font-size: 1.3rem;
+    }
+}
+
+/* 在 style.css 末尾添加以下样式 */
+
+/* 模态框收藏按钮 */
+.modal-favorite-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-left: 10px;
+    font-size: 1.2rem;
+}
+
+.modal-favorite-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.modal-favorite-btn.active {
+    background: #ff9800;
+    border-color: #ff9800;
+}
+
+.modal-favorite-btn.active:hover {
+    background: #f57c00;
+    border-color: #f57c00;
+}
+
+/* 确保收藏页面空状态样式正确 */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.no-results i {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.no-results h3 {
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.no-results p {
+    color: #777;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+/* 在 style.css 中添加 */
+.favorite-btn {
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover {
+    color: #ff9800;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.favorite-btn.active {
+    color: #ff9800;
+    background: white;
+    animation: favoritePulse 0.5s ease;
+}
+
+@keyframes favoritePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.favorite-btn.active::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    background: #ff9800;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+/* 对比页面特殊样式
+.disease-card.compare-mode .card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+} */
+
+/* 当在对比页面时，隐藏收藏按钮 */
+/* .compare-page .favorite-btn {
+    display: none;
+} */
+
+/* 当在对比页面时，对比按钮样式调整
+.compare-page .compare-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #4caf50;
+    color: #4caf50;
+}
+
+.compare-page .compare-btn.compare-active {
+    background: #4caf50;
+    color: white;
+} */
+/* 
+对比页面标题样式 
+.compare-page-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.compare-page-title i {
+    color: #4caf50;
+} */
+
+/* 对比页面空状态样式
+.compare-empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.compare-empty-state i {
+    font-size: 4rem;
+    color: #4caf50;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+} */
+
+.compare-empty-state h3 {
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.compare-empty-state p {
+    color: #777;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.compare-empty-state .btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+/* 对比选择页面提示 */
+/* .compare-selection-hint {
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2e7d32;
+} */
+
+.compare-selection-hint i {
+    color: #4caf50;
+    font-size: 1.2rem;
+}
+
+/* 筛选框样式 */
+.filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 80px;
+    animation: fadeIn 0.3s ease;
+}
+
+.filter-overlay.show {
+    display: flex;
+}
+
+.filter-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+}
+
+.filter-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.filter-modal-header h3 {
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.filter-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.filter-modal-body {
+    padding: 2rem;
+}
+
+.filter-conditions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-group {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 1rem;
+    color: #495057;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label i {
+    color: #6a11cb;
+    font-size: 1.1rem;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-tag {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-tag:hover {
+    background: #e9ecef;
+    border-color: #6a11cb;
+    color: #6a11cb;
+}
+
+.filter-tag.active {
+    background: #6a11cb;
+    border-color: #6a11cb;
+    color: white;
+}
+
+/* 不同筛选类型的颜色区分 */
+.severity-tag.active[data-severity="high"] {
+    background: #ff4757;
+    border-color: #ff4757;
+}
+
+.severity-tag.active[data-severity="medium"] {
+    background: #ffa502;
+    border-color: #ffa502;
+}
+
+.severity-tag.active[data-severity="low"] {
+    background: #2ed573;
+    border-color: #2ed573;
+}
+
+.crop-tag.active {
+    background: #4caf50;
+    border-color: #4caf50;
+}
+
+.pathogen-tag.active[data-pathogen="真菌"] {
+    background: #3498db;
+    border-color: #3498db;
+}
+
+.pathogen-tag.active[data-pathogen="细菌"] {
+    background: #9b59b6;
+    border-color: #9b59b6;
+}
+
+.pathogen-tag.active[data-pathogen="病毒"] {
+    background: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.condition-tag.active {
+    background: #ff9f43;
+    border-color: #ff9f43;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 15px;
+    margin: 2rem 0;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e9ecef;
+}
+
+.filter-actions .btn-primary,
+.filter-actions .btn-secondary {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filter-status {
+    background: #e3f2fd;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #bbdefb;
+}
+
+.filter-status h4 {
+    color: #1565c0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.status-tag {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #bbdefb;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-tag i {
+    font-size: 0.8rem;
+}
+
+.filter-stats {
+    background: #e8f5e9;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #c8e6c9;
+}
+
+.filter-stats .stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filter-stats i {
+    color: #4caf50;
+    font-size: 1.2rem;
+}
+
+.filter-stats strong {
+    color: #2e7d32;
+    font-size: 1.2rem;
+}
+
+/* 病害卡片添加易发条件样式 */
+.disease-conditions {
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.disease-conditions i {
+    color: #ff9f43;
+    font-size: 0.9rem;
+}
+
+.condition-tag-small {
+    padding: 3px 8px;
+    background: #fff3e0;
+    border: 1px solid #ffe0b2;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #ef6c00;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .filter-overlay {
+        padding-top: 60px;
+        align-items: flex-start;
+    }
+    
+    .filter-modal {
+        width: 95%;
+        max-height: 70vh;
+        margin: 10px;
+    }
+    
+    .filter-conditions {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .filter-group {
+        padding: 1rem;
+    }
+    
+    .filter-tags {
+        justify-content: center;
+    }
+    
+    .filter-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-modal-header {
+        padding: 1rem;
+    }
+    
+    .filter-modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .filter-modal-body {
+        padding: 1.5rem;
+    }
+    
+    .filter-tag {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .filter-status {
+        padding: 1rem;
+    }
+    
+    .status-tag {
+        font-size: 0.8rem;
+    }
+}
+
+/* ==================== 图像查看器样式 ==================== */
+
+/* 图库模态框 */
+.image-gallery-modal .modal-content {
+    max-width: 1400px;
+    width: 95%;
+    height: 90vh;
+}
+
+.gallery-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.gallery-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.gallery-search input {
+    flex: 1;
+    padding: 12px 20px 12px 45px;
+    border: 2px solid #4caf50;
+    border-radius: 25px;
+    font-size: 1rem;
+    background: white;
+}
+
+.gallery-search i {
+    position: absolute;
+    left: 20px;
+    color: #4caf50;
+}
+
+.gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #495057;
+    white-space: nowrap;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background: white;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.gallery-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.gallery-stats span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: #666;
+}
+
+.gallery-stats strong {
+    color: #2e7d32;
+    font-size: 1.2rem;
+}
+
+/* 图库网格 */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.gallery-item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    position: relative;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    border-color: #4caf50;
+}
+
+.gallery-item.selected {
+    border-color: #ff9800;
+    background: #fff8e1;
+}
+
+.gallery-item-select {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.gallery-item-image {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.gallery-item:hover .gallery-item-image img {
+    transform: scale(1.05);
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    padding: 10px;
+    transform: translateY(100%);
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.gallery-item:hover .image-overlay {
+    transform: translateY(0);
+}
+
+.gallery-item-info {
+    padding: 1rem;
+}
+
+.item-crop {
+    font-weight: 600;
+    color: #2e7d32;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.item-disease {
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.item-disease.healthy {
+    color: #4caf50;
+}
+
+.item-disease.diseased {
+    color: #f44336;
+}
+
+.item-type {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.item-type.type-真菌 {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.item-type.type-细菌 {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.item-type.type-病毒 {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.item-type.type-健康 {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.item-actions .btn-small {
+    flex: 1;
+    padding: 6px;
+    font-size: 0.85rem;
+}
+
+/* 分页 */
+.gallery-pagination {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 36px;
+    text-align: center;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: #f5f5f5;
+    border-color: #4caf50;
+}
+
+.pagination-btn.active {
+    background: #4caf50;
+    color: white;
+    border-color: #4caf50;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+    padding: 8px;
+    color: #666;
+}
+
+/* 无图像状态 */
+.no-images {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-images i {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+/* 图像查看器模态框 */
+.image-viewer-modal .modal-content {
+    max-width: 1200px;
+    width: 95%;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-nav-btn, .image-action-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.image-nav-btn:hover, .image-action-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+#imageCounter {
+    margin: 0 10px;
+    color: white;
+    font-weight: 500;
+}
+
+/* 图像显示区域 */
+.image-viewer-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.image-display-area {
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#currentImageView {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s;
+    cursor: grab;
+}
+
+#currentImageView:active {
+    cursor: grabbing;
+}
+
+.image-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    font-size: 1.2rem;
+}
+
+.image-loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+/* 图像信息面板 */
+.image-info-panel {
+    background: white;
+    border-radius: 8px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.image-info-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.image-info-section:last-child {
+    border-bottom: none;
+}
+
+.image-info-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+}
+
+.info-item {
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-item strong {
+    color: #666;
+    font-weight: 500;
+}
+
+.info-item span {
+    color: #333;
+    font-weight: 500;
+}
+
+.health-status {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.health-status.healthy {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.health-status.diseased {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.recognition-features {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 3px solid #4caf50;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.control-group {
+    margin-bottom: 1rem;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.zoom-levels {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.zoom-level-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.zoom-level-btn:hover {
+    background: #f5f5f5;
+}
+
+.zoom-level-btn.active {
+    background: #4caf50;
+    color: white;
+    border-color: #4caf50;
+}
+
+#slideshowSpeed {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* 缩略图条 */
+.thumbnail-strip {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.thumbnail-item {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.thumbnail-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.thumbnail-item.active {
+    border-color: #4caf50;
+}
+
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 3px;
+    font-size: 0.7rem;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.3s;
+}
+
+.thumbnail-item:hover .thumbnail-overlay {
+    transform: translateY(0);
+}
+
+/* 图库操作按钮 */
+.gallery-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+    .image-viewer-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+    }
+    
+    .image-info-panel {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .gallery-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-group select {
+        width: 100%;
+    }
+    
+    .image-viewer-modal .modal-content {
+        width: 98%;
+        height: 95vh;
+    }
+    
+    .modal-header-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .thumbnail-strip {
+        padding: 10px;
+    }
+    
+    .thumbnail-item {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-item-image {
+        height: 150px;
+    }
+    
+    .gallery-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+/* 在CSS文件中添加以下样式 */
+.disease-body.no-image {
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.disease-body.no-image .disease-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.disease-body.no-image .disease-title {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.disease-body.no-image .disease-title:before {
+    content: "";
+    display: block;
+    width: 4px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 2px;
+}
+
+.disease-body.no-image .disease-symptoms {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.disease-body.no-image .disease-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0.5rem 0;
+}
+
+.disease-body.no-image .disease-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.disease-body.no-image .severity-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.disease-body.no-image .severity-badge.high {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.disease-body.no-image .severity-badge.medium {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.disease-body.no-image .severity-badge.low {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.disease-body.no-image .disease-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.disease-body.no-image .disease-tags .tag {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* 调整卡片高度以适应无图片布局 */
+.disease-card {
+    height: auto;
+    min-height: 320px;
+}
+
+/* 优化卡片在移动端的显示 */
+@media (max-width: 768px) {
+    .disease-body.no-image {
+        padding: 1rem;
+    }
+    
+    .disease-body.no-image .disease-meta {
+        gap: 0.5rem;
+    }
+    
+    .disease-body.no-image .disease-meta-item {
+        font-size: 0.85rem;
+    }
+}
+/* 图像匹配状态指示 */
+.preview-image-item.exact-match {
+    border: 2px solid #4CAF50;
+}
+
+.preview-image-item.related-match {
+    border: 2px solid #FF9800;
+}
+
+.match-badge, .related-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.match-badge {
+    background: #4CAF50;
+    color: white;
+}
+
+.related-badge {
+    background: #FF9800;
+    color: white;
+}
+
+.image-preview-note {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #FFF3E0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #EF6C00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preview-image-info {
+    position: relative;
+    padding-right: 40px; /* 为徽章留出空间 */
+}
