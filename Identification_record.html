@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>识别记录 - 农作物病虫害识别系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f9fafb 100%);
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info p {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .user-info span {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-image: url('Part1/images/default-avatar.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            object-fit: cover;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* 页面标题区域 */
+        .page-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 2rem;
+        }
+
+        /* 统计卡片区域 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card.blue { border-left-color: #3b82f6; }
+        .stat-card.green { border-left-color: #10b981; }
+        .stat-card.purple { border-left-color: #8b5cf6; }
+        .stat-card.orange { border-left-color: #f59e0b; }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .stat-trend {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-trend.up { color: #10b981; }
+        .stat-trend.down { color: #ef4444; }
+
+        /* 筛选工具栏 */
+        .toolbar {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .toolbar-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* 记录表格 */
+        .records-table-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .records-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table thead {
+            background: #f9fafb;
+        }
+
+        .records-table th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .records-table td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+        }
+
+        .records-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .records-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* 作物类型标签 */
+        .crop-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .crop-tag.tomato { background: #fee2e2; color: #991b1b; }
+        .crop-tag.rice { background: #d1fae5; color: #065f46; }
+        .crop-tag.corn { background: #fef3c7; color: #92400e; }
+        .crop-tag.wheat { background: #fce7f3; color: #9d174d; }
+        .crop-tag.pepper { background: #f3e8ff; color: #6b21a8; }
+
+        /* 严重程度标签 */
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .severity-badge.mild { background: #d1fae5; color: #065f46; }
+        .severity-badge.moderate { background: #fef3c7; color: #92400e; }
+        .severity-badge.severe { background: #fee2e2; color: #991b1b; }
+
+        /* 置信度进度条 */
+        .confidence-progress {
+            width: 100px;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .confidence-fill.high { background: linear-gradient(90deg, #10b981 0%, #059669 100%); }
+        .confidence-fill.medium { background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); }
+        .confidence-fill.low { background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%); }
+
+        .confidence-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6b7280;
+        }
+
+        .action-btn:hover {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        /* 详情模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .detail-item {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .detail-image {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .detail-image img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .treatment-card {
+            grid-column: 1 / -1;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .treatment-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .treatment-content {
+            color: #0c4a6e;
+            line-height: 1.5;
+        }
+
+        /* 页脚 */
+        footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #111827;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .toolbar-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-select {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .records-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-image {
+                grid-column: 1;
+            }
+
+            .treatment-card {
+                grid-column: 1;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo-section">
+                <div class="logo-icon">🌿</div>
+                <div class="logo-text">
+                    <h1>智慧农业病虫害识别系统</h1>
+                    <p>Agricultural Disease Detection System</p>
+                </div>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <p>欢迎回来</p>
+                    <span>上次登录: 2小时前</span>
+                </div>
+                <div class="user-avatar"><a href="Part1/profile.html">韩</a></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题区域 -->
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()">
+            ← 返回
+        </button>
+        <h1 class="page-title">识别记录</h1>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-label">总识别次数</div>
+                <div class="stat-value">152</div>
+                <div class="stat-trend up">
+                    ↑ 本周 +12 次
+                </div>
+            </div>
+
+            <div class="stat-card green">
+                <div class="stat-label">平均准确率</div>
+                <div class="stat-value">93.8%</div>
+                <div class="stat-trend up">
+                    ↑ 较上月 +1.5%
+                </div>
+            </div>
+
+            <div class="stat-card purple">
+                <div class="stat-label">今日识别</div>
+                <div class="stat-value">8</div>
+                <div class="stat-trend up">
+                    ↑ 较昨日 +3
+                </div>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-label">需要处理</div>
+                <div class="stat-value">5</div>
+                <div class="stat-trend down">
+                    ↓ 较上周 -2
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-content">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="搜索记录ID、病害名称..." id="searchInput">
+                </div>
+
+                <div class="filter-group">
+                    <select class="filter-select" id="cropFilter">
+                        <option value="">所有作物</option>
+                        <option value="tomato">番茄</option>
+                        <option value="rice">水稻</option>
+                        <option value="corn">玉米</option>
+                        <option value="wheat">小麦</option>
+                        <option value="pepper">辣椒</option>
+                    </select>
+
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">所有状态</option>
+                        <option value="correct">识别正确</option>
+                        <option value="warning">需要确认</option>
+                        <option value="error">识别错误</option>
+                    </select>
+
+                    <select class="filter-select" id="severityFilter">
+                        <option value="">严重程度</option>
+                        <option value="mild">轻度</option>
+                        <option value="moderate">中度</option>
+                        <option value="severe">重度</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="exportData()">
+                    📥 导出数据
+                </button>
+
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    🔄 重置筛选
+                </button>
+            </div>
+        </div>
+
+        <!-- 记录表格 -->
+        <div class="records-table-container">
+            <div class="table-header">
+                <h3>识别记录列表</h3>
+                <span class="records-count">共 <strong id="totalRecords">12</strong> 条记录</span>
+            </div>
+
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>记录ID</th>
+                        <th>用户</th>
+                        <th>作物类型</th>
+                        <th>识别结果</th>
+                        <th>置信度</th>
+                        <th>严重程度</th>
+                        <th>识别时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                    <!-- 动态生成的记录行 -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 燕山大学 智慧农业病虫害识别系统 v2.3.1</p>
+            <div class="footer-links">
+                <a href="#" onclick="navigateTo('help')">使用帮助</a>
+                <a href="#" onclick="navigateTo('privacy')">隐私政策</a>
+                <a href="#" onclick="navigateTo('knowledge')">知识库</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 详情模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>识别记录详情</h3>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">记录ID</div>
+                        <div class="detail-value" id="modalRecordId">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">用户名称</div>
+                        <div class="detail-value" id="modalUser">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">作物类型</div>
+                        <div class="detail-value" id="modalCrop">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">识别结果</div>
+                        <div class="detail-value" id="modalDisease">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">置信度</div>
+                        <div class="detail-value" id="modalConfidence">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">严重程度</div>
+                        <div class="detail-value" id="modalSeverity">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">识别时间</div>
+                        <div class="detail-value" id="modalTime">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">地理位置</div>
+                        <div class="detail-value" id="modalLocation">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">识别模型</div>
+                        <div class="detail-value" id="modalModel">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">处理状态</div>
+                        <div class="detail-value" id="modalTreatmentStatus">-</div>
+                    </div>
+                    
+                    <div class="detail-item" style="grid-column: 1 / -1;">
+                        <div class="detail-label">病害特征描述</div>
+                        <div class="detail-value" id="modalDescription">-</div>
+                    </div>
+                    
+                    <div class="detail-image">
+                        <div class="detail-label">识别图片</div>
+                        <img id="modalImage" src="" alt="识别图片">
+                    </div>
+                    
+                    <div class="detail-item" style="grid-column: 1 / -1;">
+                        <div class="detail-label">用户反馈</div>
+                        <div class="detail-value" id="modalFeedback">-</div>
+                    </div>
+                    
+                    <div class="treatment-card" id="modalTreatment">
+                        <div class="treatment-title">防治建议</div>
+                        <div class="treatment-content" id="modalTreatmentContent">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 详细的模拟数据 - 12条记录
+        const recordsData = [
+            {
+                id: 'REC20250115001',
+                user: '张明',
+                crop: '番茄',
+                cropType: 'tomato',
+                disease: '番茄早疫病',
+                description: '叶片出现褐色圆形病斑，有明显同心轮纹，边缘为黄绿色晕圈，病斑中心易破裂穿孔。',
+                confidence: 96.2,
+                confidenceLevel: 'high',
+                severity: '中度',
+                severityLevel: 'moderate',
+                time: '2025-01-15 14:23:45',
+                location: '河北省秦皇岛市昌黎县',
+                coordinates: '39.9042°N, 119.6002°E',
+                model: 'ResNet-50 v2.3',
+                status: 'correct',
+                treatmentStatus: '已处理',
+                feedback: '识别准确，已按照建议使用苯醚甲环唑进行防治，效果良好。',
+                treatment: '建议使用25%嘧菌酯悬浮剂1500倍液喷雾，每隔7-10天一次，连续2-3次。加强田间通风，及时清除病残体。',
+                image: 'https://images.unsplash.com/photo-1590502593746-0d3e99d2c324?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115002',
+                user: '李建国',
+                crop: '水稻',
+                cropType: 'rice',
+                disease: '水稻纹枯病',
+                description: '叶鞘产生云纹状病斑，边缘褐色，中部灰白色，严重时叶片枯黄，茎秆基部腐烂。',
+                confidence: 91.8,
+                confidenceLevel: 'high',
+                severity: '轻度',
+                severityLevel: 'mild',
+                time: '2025-01-15 14:18:32',
+                location: '山东省潍坊市寿光市',
+                coordinates: '36.8625°N, 118.7688°E',
+                model: 'EfficientNet-B4',
+                status: 'correct',
+                treatmentStatus: '处理中',
+                feedback: '识别准确，正在按照建议进行防治。',
+                treatment: '使用20%井冈霉素可湿性粉剂每亩100克兑水喷雾，或5%井岗霉素水剂每亩150毫升。保持田间适度干湿交替。',
+                image: 'https://images.unsplash.com/photo-1621115714963-9da77e2ce2c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115003',
+                user: '王秀英',
+                crop: '玉米',
+                cropType: 'corn',
+                disease: '玉米大斑病',
+                description: '叶片上出现梭形或长椭圆形大斑，病斑中央灰褐色，边缘深褐色，长度可达5-10厘米。',
+                confidence: 89.3,
+                confidenceLevel: 'high',
+                severity: '中度',
+                severityLevel: 'moderate',
+                time: '2025-01-15 14:15:18',
+                location: '江苏省南京市六合区',
+                coordinates: '32.3047°N, 118.8029°E',
+                model: 'VGG-16 v3.1',
+                status: 'warning',
+                treatmentStatus: '需专家确认',
+                feedback: '识别结果可能与实际情况有差异，建议专家复查。',
+                treatment: '建议使用50%多菌灵可湿性粉剂500倍液喷雾，或75%百菌清可湿性粉剂600倍液。注意轮作倒茬。',
+                image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115004',
+                user: '赵丽华',
+                crop: '番茄',
+                cropType: 'tomato',
+                disease: '番茄晚疫病',
+                description: '叶片边缘出现水浸状暗绿色病斑，潮湿时病斑边缘产生白色霉层，果实上有褐色凹陷病斑。',
+                confidence: 78.5,
+                confidenceLevel: 'medium',
+                severity: '重度',
+                severityLevel: 'severe',
+                time: '2025-01-15 14:08:56',
+                location: '浙江省杭州市萧山区',
+                coordinates: '30.1838°N, 120.2648°E',
+                model: 'MobileNet v2.0',
+                status: 'error',
+                treatmentStatus: '未处理',
+                feedback: '实际为早疫病，建议修正识别结果。',
+                treatment: '使用68.75%氟吡菌胺·霜霉威悬浮剂1000倍液喷雾，或52.5%噁酮·霜脲氰水分散粒剂1500倍液。',
+                image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115005',
+                user: '孙伟',
+                crop: '小麦',
+                cropType: 'wheat',
+                disease: '小麦赤霉病',
+                description: '麦穗颖壳基部出现水浸状淡褐色病斑，后扩大至整个小穗，病部产生粉红色霉层。',
+                confidence: 94.7,
+                confidenceLevel: 'high',
+                severity: '中度',
+                severityLevel: 'moderate',
+                time: '2025-01-15 14:02:11',
+                location: '安徽省合肥市肥西县',
+                coordinates: '31.7094°N, 117.1615°E',
+                model: 'ResNet-101 v1.5',
+                status: 'correct',
+                treatmentStatus: '已处理',
+                feedback: '识别准确，防治及时，病害得到控制。',
+                treatment: '抽穗扬花期使用25%氰烯菌酯悬浮剂每亩100毫升，或50%多菌灵可湿性粉剂每亩100克兑水喷雾。',
+                image: 'https://images.unsplash.com/photo-1594588150487-7a5c7c3c7b3c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115006',
+                user: '周红梅',
+                crop: '辣椒',
+                cropType: 'pepper',
+                disease: '辣椒疫病',
+                description: '茎基部出现暗绿色水浸状病斑，后变褐色缢缩，植株萎蔫死亡，潮湿时病部有白色霉层。',
+                confidence: 92.1,
+                confidenceLevel: 'high',
+                severity: '轻度',
+                severityLevel: 'mild',
+                time: '2025-01-15 13:55:42',
+                location: '湖南省长沙市望城区',
+                coordinates: '28.2981°N, 112.8165°E',
+                model: 'Inception-v3',
+                status: 'correct',
+                treatmentStatus: '已处理',
+                feedback: '识别准确，防治建议很实用。',
+                treatment: '使用72%霜脲·锰锌可湿性粉剂600倍液灌根，或69%烯酰·锰锌可湿性粉剂800倍液喷雾。',
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115007',
+                user: '吴刚',
+                crop: '水稻',
+                cropType: 'rice',
+                disease: '水稻稻瘟病',
+                description: '叶片上出现梭形病斑，中央灰白色，边缘褐色，病斑两端有褐色坏死线，湿度大时产生灰色霉层。',
+                confidence: 87.6,
+                confidenceLevel: 'high',
+                severity: '中度',
+                severityLevel: 'moderate',
+                time: '2025-01-15 13:48:21',
+                location: '湖北省武汉市黄陂区',
+                coordinates: '30.8826°N, 114.3743°E',
+                model: 'DenseNet-121',
+                status: 'warning',
+                treatmentStatus: '需专家确认',
+                feedback: '部分特征不明显，建议专家进一步诊断。',
+                treatment: '使用40%稻瘟灵乳油每亩100毫升，或75%三环唑可湿性粉剂每亩30克兑水喷雾。',
+                image: 'https://images.unsplash.com/photo-1620241179307-e8e7c2f3b6f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250115008',
+                user: '郑秀丽',
+                crop: '玉米',
+                cropType: 'corn',
+                disease: '玉米锈病',
+                description: '叶片两面产生黄褐色夏孢子堆，破裂后散出铁锈色粉末，后期产生黑色冬孢子堆。',
+                confidence: 85.4,
+                confidenceLevel: 'high',
+                severity: '轻度',
+                severityLevel: 'mild',
+                time: '2025-01-15 13:35:17',
+                location: '河南省郑州市中牟县',
+                coordinates: '34.7207°N, 113.9805°E',
+                model: 'ResNet-50 v2.1',
+                status: 'correct',
+                treatmentStatus: '处理中',
+                feedback: '识别准确，正在按照建议防治。',
+                treatment: '使用25%粉锈宁可湿性粉剂1000倍液，或12.5%烯唑醇可湿性粉剂2000倍液喷雾。',
+                image: 'https://images.unsplash.com/photo-1618897996318-5c8d89fd5b49?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250114001',
+                user: '刘强',
+                crop: '小麦',
+                cropType: 'wheat',
+                disease: '小麦白粉病',
+                description: '叶片表面覆盖白色粉状霉层，后期霉层变灰，散生黑色小粒点，叶片黄化早衰。',
+                confidence: 93.8,
+                confidenceLevel: 'high',
+                severity: '轻度',
+                severityLevel: 'mild',
+                time: '2025-01-14 16:42:33',
+                location: '山西省运城市盐湖区',
+                coordinates: '35.0264°N, 110.9982°E',
+                model: 'EfficientNet-B3',
+                status: 'correct',
+                treatmentStatus: '已处理',
+                feedback: '识别准确，防治效果良好。',
+                treatment: '使用15%三唑酮可湿性粉剂每亩100克，或30%醚菌酯悬浮剂每亩50毫升兑水喷雾。',
+                image: 'https://images.unsplash.com/photo-1523473827533-2a64d0d36748?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250113001',
+                user: '陈明',
+                crop: '番茄',
+                cropType: 'tomato',
+                disease: '番茄黄化曲叶病毒病',
+                description: '植株矮化，顶部新叶变小、皱缩、黄化，叶片边缘向上卷曲，叶背叶脉呈紫色。',
+                confidence: 81.2,
+                confidenceLevel: 'medium',
+                severity: '重度',
+                severityLevel: 'severe',
+                time: '2025-01-13 11:28:45',
+                location: '广东省广州市白云区',
+                coordinates: '23.1572°N, 113.2734°E',
+                model: 'MobileNet v1.8',
+                status: 'warning',
+                treatmentStatus: '需专家确认',
+                feedback: '症状复杂，建议专家现场诊断。',
+                treatment: '及时拔除病株，使用5%香菇多糖水剂500倍液喷雾，配合防治烟粉虱。',
+                image: 'https://images.unsplash.com/photo-1579113800032-c38bd7635818?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250112001',
+                user: '杨建国',
+                crop: '水稻',
+                cropType: 'rice',
+                disease: '水稻白叶枯病',
+                description: '叶片边缘出现水浸状暗绿色病斑，后沿叶脉扩展形成长条状黄白色病斑，病健交界明显。',
+                confidence: 88.9,
+                confidenceLevel: 'high',
+                severity: '中度',
+                severityLevel: 'moderate',
+                time: '2025-01-12 09:15:22',
+                location: '四川省成都市郫都区',
+                coordinates: '30.7951°N, 103.8876°E',
+                model: 'VGG-19 v2.2',
+                status: 'correct',
+                treatmentStatus: '已处理',
+                feedback: '识别准确，防治及时。',
+                treatment: '使用20%叶枯唑可湿性粉剂每亩100克，或20%噻菌铜悬浮剂每亩100毫升兑水喷雾。',
+                image: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'REC20250111001',
+                user: '黄秀兰',
+                crop: '玉米',
+                cropType: 'corn',
+                disease: '健康叶片',
+                description: '叶片颜色鲜绿，形态正常，无病斑、虫害等异常情况，植株生长健壮。',
+                confidence: 97.3,
+                confidenceLevel: 'high',
+                severity: '无',
+                severityLevel: 'mild',
+                time: '2025-01-11 15:42:19',
+                location: '吉林省长春市农安县',
+                coordinates: '44.4339°N, 125.1686°E',
+                model: 'ResNet-34 v3.0',
+                status: 'correct',
+                treatmentStatus: '无需处理',
+                feedback: '识别准确，植株健康。',
+                treatment: '保持良好田间管理，定期巡查，预防病虫害发生。',
+                image: 'https://images.unsplash.com/photo-1590792166785-64d7c037f4b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        // 导航功能
+        function navigateTo(page) {
+            const pageMap = {
+                '知识库': 'knowledge',
+                '使用帮助': 'help',
+                '隐私政策': 'privacy'
+            };
+            
+            const pageKey = pageMap[page] || page;
+            
+            switch(pageKey) {
+                case 'knowledge':
+                    window.location.href = '../index.html';
+                    break;
+                case 'help':
+                    alert('正在跳转到使用帮助页面...');
+                    break;
+                case 'privacy':
+                    alert('正在跳转到隐私政策页面...');
+                    break;
+                default:
+                    console.log(`未知页面: ${page}`);
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            renderTable(recordsData);
+            updateTotalRecords();
+        });
+
+        // 渲染表格
+        function renderTable(data) {
+            const tbody = document.getElementById('recordsTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${record.id}</strong></td>
+                    <td>${record.user}</td>
+                    <td><span class="crop-tag ${record.cropType}">${record.crop}</span></td>
+                    <td><strong>${record.disease}</strong></td>
+                    <td>
+                        <div class="confidence-progress">
+                            <div class="confidence-fill ${record.confidenceLevel}" style="width: ${record.confidence}%"></div>
+                        </div>
+                        <div class="confidence-text">${record.confidence}%</div>
+                    </td>
+                    <td>
+                        <span class="severity-badge ${record.severityLevel}">
+                            ${record.severity}
+                        </span>
+                    </td>
+                    <td>${record.time}</td>
+                    <td>
+                        <span class="status-badge ${record.status}">
+                            ${record.status === 'correct' ? '✓ 正确' : record.status === 'warning' ? '⚠ 需确认' : '✗ 错误'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick='viewDetail(${JSON.stringify(record)})' title="查看详情">
+                                👁️
+                            </button>
+                            <button class="action-btn" onclick="downloadRecord('${record.id}')" title="下载报告">
+                                📥
+                            </button>
+                            <button class="action-btn" onclick="shareRecord('${record.id}')" title="分享">
+                                ↗️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 更新总记录数
+        function updateTotalRecords() {
+            document.getElementById('totalRecords').textContent = recordsData.length;
+        }
+
+        // 返回上一页
+        function goBack() {
+            window.history.back();
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = recordsData.filter(record => 
+                record.id.toLowerCase().includes(searchTerm) ||
+                record.disease.toLowerCase().includes(searchTerm) ||
+                record.user.toLowerCase().includes(searchTerm) ||
+                record.crop.toLowerCase().includes(searchTerm)
+            );
+            renderTable(filtered);
+        });
+
+        // 筛选功能
+        document.getElementById('cropFilter').addEventListener('change', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('severityFilter').addEventListener('change', applyFilters);
+
+        function applyFilters() {
+            const cropFilter = document.getElementById('cropFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const severityFilter = document.getElementById('severityFilter').value;
+            
+            let filtered = recordsData;
+            
+            if (cropFilter) {
+                filtered = filtered.filter(record => record.cropType === cropFilter);
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(record => record.status === statusFilter);
+            }
+            
+            if (severityFilter) {
+                filtered = filtered.filter(record => record.severityLevel === severityFilter);
+            }
+            
+            renderTable(filtered);
+        }
+
+        // 重置筛选
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('cropFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('severityFilter').value = '';
+            renderTable(recordsData);
+        }
+
+        // 导出数据
+        function exportData() {
+            alert('正在导出12条记录为Excel文件...');
+            // 实际项目中这里会调用后端API导出
+        }
+
+        // 查看详情
+        function viewDetail(record) {
+            // 填充模态框内容
+            document.getElementById('modalRecordId').textContent = record.id;
+            document.getElementById('modalUser').textContent = record.user;
+            document.getElementById('modalCrop').textContent = record.crop;
+            document.getElementById('modalDisease').textContent = record.disease;
+            document.getElementById('modalDescription').textContent = record.description;
+            document.getElementById('modalConfidence').textContent = record.confidence + '%';
+            document.getElementById('modalSeverity').textContent = record.severity;
+            document.getElementById('modalTime').textContent = record.time;
+            document.getElementById('modalLocation').textContent = record.location + ' (' + record.coordinates + ')';
+            document.getElementById('modalModel').textContent = record.model;
+            document.getElementById('modalTreatmentStatus').textContent = record.treatmentStatus;
+            document.getElementById('modalFeedback').textContent = record.feedback;
+            document.getElementById('modalTreatmentContent').textContent = record.treatment;
+            document.getElementById('modalImage').src = record.image;
+            document.getElementById('modalImage').alt = record.disease + '识别图片';
+            
+            // 显示模态框
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // 下载记录报告
+        function downloadRecord(recordId) {
+            const record = recordsData.find(r => r.id === recordId);
+            if (record) {
+                alert(`正在下载记录 ${recordId} 的详细报告...`);
+                // 实际项目中这里会生成PDF报告并下载
+            }
+        }
+
+        // 分享记录
+        function shareRecord(recordId) {
+            const record = recordsData.find(r => r.id === recordId);
+            if (record) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: `病虫害识别记录 - ${record.id}`,
+                        text: `作物：${record.crop}，病害：${record.disease}，严重程度：${record.severity}`,
+                        url: window.location.href
+                    });
+                } else {
+                    alert('复制了记录信息，可以粘贴到其他应用中分享。');
+                }
+            }
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 页脚链接点击事件
+        document.querySelectorAll('.footer-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageText = this.textContent.trim();
+                navigateTo(pageText);
+            });
+        });
+    </script>
+</body>
+</html>

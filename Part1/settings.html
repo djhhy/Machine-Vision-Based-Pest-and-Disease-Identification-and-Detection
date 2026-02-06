@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 病虫害识别系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ECC71;
+            --primary-dark: #27AE60;
+            --primary-light: #A8E6CF;
+            --secondary: #3498DB;
+            --secondary-dark: #2980B9;
+            --accent: #F39C12;
+            --accent-dark: #E67E22;
+            --success: #1ABC9C;
+            --warning: #F1C40F;
+            --danger: #E74C3C;
+            --dark: #2C3E50;
+            --dark-light: #34495E;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --text-light: #95A5A6;
+            --border-color: #BDC3C7;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --gradient-primary: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            --gradient-secondary: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            --gradient-accent: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logo-section:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+            background: rgba(46, 204, 113, 0.08);
+        }
+
+        .nav-menu a.active {
+            color: var(--primary);
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* 设置页面头部 */
+        .settings-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .settings-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .settings-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* 设置主体 */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        /* 设置侧边栏 */
+        .settings-sidebar {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            border-bottom: 1px solid var(--light);
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(46, 204, 113, 0.05);
+            color: var(--primary);
+            padding-left: 2rem;
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+        }
+
+        .sidebar-nav i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* 设置内容区域 */
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* 设置卡片 */
+        .settings-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-header i {
+            color: var(--primary);
+        }
+
+        /* 设置组 */
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            background: var(--light);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .setting-item:hover {
+            background: rgba(46, 204, 113, 0.08);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .setting-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .setting-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Switch 开关 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d1d5db;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background: var(--gradient-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* 下拉选择 */
+        .select-wrapper {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: white;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--light);
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        /* 危险区域 */
+        .danger-zone {
+            border: 2px solid var(--danger);
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        .danger-zone .card-header {
+            border-bottom-color: rgba(231, 76, 60, 0.2);
+        }
+
+        .danger-zone .card-header h2 {
+            color: var(--danger);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        /* 页脚 */
+        .settings-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-success {
+            background: var(--primary);
+        }
+
+        .notification-error {
+            background: var(--danger);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-sidebar {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                width: 100%;
+            }
+            
+            .sidebar-nav li {
+                border-bottom: none;
+                border-right: 1px solid var(--light);
+            }
+            
+            .sidebar-nav a {
+                white-space: nowrap;
+            }
+            
+            .sidebar-nav a.active {
+                border-left: none;
+                border-bottom: 4px solid var(--primary);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .switch {
+                align-self: flex-end;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html" class="logo-section">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">
+                    <h1>智慧农业病虫害识别系统</h1>
+                    <p>系统设置</p>
+                </div>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> 个人信息</a></li>
+                <li><a href="#" class="active"><i class="fas fa-cog"></i> 系统设置</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 设置页面头部 -->
+        <div class="settings-header">
+            <h1><i class="fas fa-sliders-h"></i> 系统设置</h1>
+            <p>自定义您的系统偏好设置</p>
+        </div>
+
+        <!-- 设置主体 -->
+        <div class="settings-container">
+            <!-- 设置侧边栏 -->
+            <div class="settings-sidebar">
+                <ul class="sidebar-nav">
+                    <li><a href="#display" class="active" onclick="switchSection('display')">
+                        <i class="fas fa-palette"></i>
+                        <span>显示设置</span>
+                    </a></li>
+                    <li><a href="#advanced" onclick="switchSection('advanced')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>高级设置</span>
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- 设置内容区域 -->
+            <div class="settings-content">
+                <!-- 显示设置 -->
+                <div id="display-section" class="settings-section">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-palette"></i> 显示设置</h2>
+                        </div>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>深色模式</h3>
+                                    <p>切换深色或浅色主题，保护眼睛</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="darkModeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>字体大小</h3>
+                                    <p>调整系统显示字体大小</p>
+                                </div>
+                                <div class="select-wrapper">
+                                    <select id="fontSizeSelect">
+                                        <option value="small">小号字体</option>
+                                        <option value="medium" selected>中号字体</option>
+                                        <option value="large">大号字体</option>
+                                        <option value="xlarge">特大字体</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级设置 -->
+                <div id="advanced-section" class="settings-section" style="display: none;">
+                    <div class="settings-card danger-zone">
+                        <div class="card-header">
+                            <h2><i class="fas fa-exclamation-triangle"></i> 高级设置</h2>
+                        </div>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>重置所有设置</h3>
+                                    <p>将系统设置恢复为默认值</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="resetSettings()">
+                                    <i class="fas fa-redo"></i> 重置设置
+                                </button>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>清除缓存数据</h3>
+                                    <p>清除本地存储的临时数据</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="clearCache()">
+                                    <i class="fas fa-trash"></i> 清除缓存
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 保存按钮 -->
+                <div class="settings-card">
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="saveSettings()">
+                            <i class="fas fa-save"></i> 保存设置
+                        </button>
+                        <button class="btn btn-secondary" onclick="loadDefaultSettings()">
+                            <i class="fas fa-undo"></i> 恢复默认
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="settings-footer">
+            <p>© 2025 燕山大学智慧农业病虫害识别系统 | 版本 v2.3.1</p>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            setupEventListeners();
+        });
+
+        // 切换设置部分
+        function switchSection(sectionId) {
+            // 隐藏所有部分
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // 显示选中的部分
+            document.getElementById(sectionId + '-section').style.display = 'block';
+            
+            // 更新导航激活状态
+            document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.closest('a').classList.add('active');
+        }
+
+        // 加载设置
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('userSettings')) || getDefaultSettings();
+            
+            // 显示设置
+            document.getElementById('darkModeToggle').checked = settings.darkMode || false;
+            document.getElementById('fontSizeSelect').value = settings.fontSize || 'medium';
+            
+            // 应用深色模式
+            applyDarkMode(settings.darkMode);
+            // 应用字体大小
+            applyFontSize(settings.fontSize || 'medium');
+        }
+
+        // 获取默认设置
+        function getDefaultSettings() {
+            return {
+                darkMode: false,
+                fontSize: 'medium'
+            };
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 深色模式切换
+            document.getElementById('darkModeToggle').addEventListener('change', function(e) {
+                applyDarkMode(e.target.checked);
+            });
+            
+            // 字体大小切换
+            document.getElementById('fontSizeSelect').addEventListener('change', function(e) {
+                applyFontSize(e.target.value);
+            });
+        }
+
+        // 应用深色模式
+        function applyDarkMode(enabled) {
+            if (enabled) {
+                document.body.style.backgroundColor = '#1a1a2e';
+                document.body.style.color = '#ffffff';
+                document.querySelectorAll('.settings-card, .settings-sidebar').forEach(card => {
+                    card.style.backgroundColor = '#16213e';
+                    card.style.color = '#ffffff';
+                });
+            } else {
+                document.body.style.backgroundColor = '';
+                document.body.style.color = '';
+                document.querySelectorAll('.settings-card, .settings-sidebar').forEach(card => {
+                    card.style.backgroundColor = '';
+                    card.style.color = '';
+                });
+            }
+        }
+
+        // 应用字体大小
+        function applyFontSize(size) {
+            const sizes = {
+                'small': '14px',
+                'medium': '16px',
+                'large': '18px',
+                'xlarge': '20px'
+            };
+            document.body.style.fontSize = sizes[size];
+        }
+
+        // 保存设置
+        function saveSettings() {
+            const settings = {
+                darkMode: document.getElementById('darkModeToggle').checked,
+                fontSize: document.getElementById('fontSizeSelect').value
+            };
+            
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+            showNotification('设置已保存！', 'success');
+            
+            // 标记设置已更新
+            settings.needUpdate = true;
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+        }
+
+        // 恢复默认设置
+        function loadDefaultSettings() {
+            if (confirm('确定要恢复默认设置吗？这将会覆盖当前的所有设置。')) {
+                const defaultSettings = getDefaultSettings();
+                localStorage.setItem('userSettings', JSON.stringify(defaultSettings));
+                loadSettings();
+                showNotification('已恢复默认设置！', 'success');
+            }
+        }
+
+        // 重置所有设置
+        function resetSettings() {
+            if (confirm('确定要重置所有设置吗？这将会恢复所有系统设置为默认值。')) {
+                localStorage.setItem('userSettings', JSON.stringify(getDefaultSettings()));
+                loadSettings();
+                showNotification('所有设置已重置！', 'success');
+            }
+        }
+
+        // 清除缓存
+        function clearCache() {
+            if (confirm('确定要清除缓存数据吗？这可能会影响系统性能。')) {
+                // 清除特定的缓存数据
+                localStorage.removeItem('tempData');
+                sessionStorage.clear();
+                showNotification('缓存已清除！', 'success');
+            }
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

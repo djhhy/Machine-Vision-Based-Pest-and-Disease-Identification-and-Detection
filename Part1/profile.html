@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息 - 病虫害识别系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 导航栏样式修改 - 改为浅橙色背景 */
+        .navbar {
+            background: linear-gradient(135deg, #fdba74 0%, #fb923c 100%);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-menu a {
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: #fef3c7;
+            transform: translateY(-2px);
+        }
+        
+        /* 页脚样式 */
+        .dashboard-footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 1.5rem; /* 缩短了距离 */
+            width: 100%;
+        }
+        
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        
+        .footer-links a:hover {
+            color: #111827;
+        }
+        
+        /* 个人信息页面特定样式 */
+        .profile-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .profile-header h1 {
+            color: #374151;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .profile-header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .profile-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .profile-sidebar {
+            flex: 0 0 300px;
+        }
+
+        /* 用户卡片改为浅橙色 */
+        .user-card {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: #78350f;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #ffedd5;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            color: #f97316;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-upload-btn:hover {
+            background: #fef3c7;
+            transform: scale(1.1);
+        }
+
+        .user-card h2 {
+            margin: 10px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: #92400e;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: #92400e;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(120, 53, 15, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #78350f;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #92400e;
+            opacity: 0.8;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 15px;
+            color: #374151;
+            font-size: 18px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            color: #4b5563;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        .profile-content {
+            flex: 1;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .section-header h3 {
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #fdba74 0%, #fb923c 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 146, 60, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4b5563;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #fdba74;
+            box-shadow: 0 0 0 3px rgba(253, 186, 116, 0.2);
+        }
+
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: #f9fafb;
+            color: #6b7280;
+            cursor: not-allowed;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        }
+
+        /* 新增地区显示框样式 */
+        .region-display {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f9fafb;
+            color: #6b7280;
+            display: none; /* 默认隐藏 */
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-save, .btn-cancel {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        /* 活动记录样式 */
+        #recentActivities {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #fdba74;
+            transition: all 0.3s;
+            border: 1px solid #f3f4f6;
+        }
+        
+        .activity-item:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #78350f;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content h4 {
+            margin-bottom: 5px;
+            color: #374151;
+            font-size: 16px;
+        }
+        
+        .activity-content p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .activity-time {
+            color: #9ca3af;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .profile-container {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                flex: none;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-save, .btn-cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-section" style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="logo-icon" style="width: 40px; height: 40px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fb923c; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    🌿
+                </div>
+                <div class="logo-text" style="display: flex; flex-direction: column;">
+                    <h1 style="font-size: 1.25rem; font-weight: 700; color: white; margin: 0; line-height: 1.2;">
+                        智慧农业病虫害识别系统
+                    </h1>
+                    <p style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.95); margin: 0;">
+                        Agricultural Disease Detection System
+                    </p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> 首页</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="profile-header">
+            <h1><i class="fas fa-user-circle"></i> 个人信息管理</h1>
+            <p>管理您的账户信息和偏好设置</p>
+        </div>
+
+        <div class="profile-container">
+            <!-- 左侧：个人信息 -->
+            <div class="profile-sidebar">
+                <div class="user-card">
+                    <div class="avatar-container">
+                        <img src="images/default-avatar.png" alt="用户头像" id="userAvatar">
+                        <button class="avatar-upload-btn" onclick="triggerAvatarUpload()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                    </div>
+                    <h2 id="userName">李四</h2>
+                    <p class="user-role">用户</p>
+                    <p class="user-email" id="userEmail">lisi@example.com</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="scanCount">128</span>
+                            <span class="stat-label">识别次数</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="projectCount">3</span>
+                            <span class="stat-label">参与项目</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>快捷操作</h3>
+                    <button class="action-btn" onclick="changePassword()">
+                        <i class="fas fa-key"></i> 修改密码
+                    </button>
+                    <button class="action-btn" onclick="exportData()">
+                        <i class="fas fa-download"></i> 导出数据
+                    </button>
+                </div>
+            </div>
+
+            <!-- 右侧：详细信息 -->
+            <div class="profile-content">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-info-circle"></i> 基本信息</h3>
+                        <button class="edit-btn" onclick="toggleEditMode('basicInfo')">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                    </div>
+                    
+                    <form id="basicInfoForm">
+                        <div class="form-group">
+                            <label for="fullName"><i class="fas fa-user"></i> 姓名</label>
+                            <input type="text" id="fullName" name="fullName" value="李四" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="region"><i class="fas fa-map-marker-alt"></i> 地区</label>
+                            <!-- 显示区域，非编辑状态 -->
+                            <div class="region-display" id="regionDisplay">华东/上海</div>
+                            <!-- 选择区域，编辑状态 -->
+                            <select id="region" name="region" disabled>
+                                <option value="">请选择地区</option>
+                                
+                                <!-- 华东地区 -->
+                                <optgroup label="华东地区">
+                                    <option value="华东/上海" selected>上海</option>
+                                    <option value="华东/江苏">江苏</option>
+                                    <option value="华东/浙江">浙江</option>
+                                    <option value="华东/安徽">安徽</option>
+                                    <option value="华东/江西">江西</option>
+                                    <option value="华东/山东">山东</option>
+                                    <option value="华东/福建">福建</option>
+                                    <option value="华东/台湾">台湾</option>
+                                </optgroup>
+                                
+                                <!-- 华南地区 -->
+                                <optgroup label="华南地区">
+                                    <option value="华南/广东">广东</option>
+                                    <option value="华南/广西">广西</option>
+                                    <option value="华南/海南">海南</option>
+                                    <option value="华南/香港">香港</option>
+                                    <option value="华南/澳门">澳门</option>
+                                </optgroup>
+                                
+                                <!-- 华北地区 -->
+                                <optgroup label="华北地区">
+                                    <option value="华北/北京">北京</option>
+                                    <option value="华北/天津">天津</option>
+                                    <option value="华北/河北">河北</option>
+                                    <option value="华北/山西">山西</option>
+                                    <option value="华北/内蒙古">内蒙古</option>
+                                </optgroup>
+                                
+                                <!-- 华中地区 -->
+                                <optgroup label="华中地区">
+                                    <option value="华中/河南">河南</option>
+                                    <option value="华中/湖北">湖北</option>
+                                    <option value="华中/湖南">湖南</option>
+                                </optgroup>
+                                
+                                <!-- 西南地区 -->
+                                <optgroup label="西南地区">
+                                    <option value="西南/重庆">重庆</option>
+                                    <option value="西南/四川">四川</option>
+                                    <option value="西南/贵州">贵州</option>
+                                    <option value="西南/云南">云南</option>
+                                    <option value="西南/西藏">西藏</option>
+                                </optgroup>
+                                
+                                <!-- 西北地区 -->
+                                <optgroup label="西北地区">
+                                    <option value="西北/陕西">陕西</option>
+                                    <option value="西北/甘肃">甘肃</option>
+                                    <option value="西北/青海">青海</option>
+                                    <option value="西北/宁夏">宁夏</option>
+                                    <option value="西北/新疆">新疆</option>
+                                </optgroup>
+                                
+                                <!-- 东北地区 -->
+                                <optgroup label="东北地区">
+                                    <option value="东北/辽宁">辽宁</option>
+                                    <option value="东北/吉林">吉林</option>
+                                    <option value="东北/黑龙江">黑龙江</option>
+                                </optgroup>
+                                
+                                <!-- 其他 -->
+                                <optgroup label="其他">
+                                    <option value="其他/其他地区">其他地区</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthDate"><i class="fas fa-birthday-cake"></i> 出生日期</label>
+                            <input type="date" id="birthDate" name="birthDate" value="2000-01-01" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone"><i class="fas fa-phone"></i> 手机号码</label>
+                            <input type="tel" id="phone" name="phone" value="13800138000" disabled>
+                        </div>
+                        
+                        <div class="form-buttons" style="display: none;" id="basicInfoButtons">
+                            <button type="button" class="btn-cancel" onclick="cancelEdit('basicInfo')">取消</button>
+                            <button type="submit" class="btn-save">保存</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> 最近活动</h3>
+                    </div>
+                    <div id="recentActivities">
+                        <!-- 活动记录将通过JS动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <p>© 2025 燕山大学 智慧农业病虫害识别系统 v2.3.1</p>
+            <div class="footer-links">
+                <a onclick="navigateTo('help')">使用帮助</a>
+                <a onclick="navigateTo('privacy')">隐私政策</a>
+                <a onclick="navigateTo('knowledge')">知识库</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 个人信息页面功能
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadRecentActivities();
+            setupEventListeners();
+            updateRegionDisplay(); // 初始化地区显示
+        });
+
+        // 加载用户数据
+        function loadUserData() {
+            // 从localStorage获取用户数据（实际项目中应从后端API获取）
+            const userData = JSON.parse(localStorage.getItem('userData')) || getDefaultUserData();
+            
+            // 更新页面显示
+            document.getElementById('userName').textContent = userData.fullName;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('scanCount').textContent = userData.scanCount;
+            document.getElementById('projectCount').textContent = userData.projectCount;
+            document.getElementById('fullName').value = userData.fullName;
+            document.getElementById('region').value = userData.region;
+            document.getElementById('birthDate').value = userData.birthDate;
+            document.getElementById('phone').value = userData.phone;
+            
+            // 更新地区显示
+            updateRegionDisplay();
+        }
+
+        // 默认用户数据
+        function getDefaultUserData() {
+            return {
+                fullName: '李四',
+                email: 'lisi@example.com',
+                region: '华东/上海', // 现在存储格式为"大区/具体地区"
+                birthDate: '2000-01-01',
+                phone: '13800138000',
+                scanCount: 128,
+                projectCount: 3
+            };
+        }
+        
+        // 更新地区显示
+        function updateRegionDisplay() {
+            const regionSelect = document.getElementById('region');
+            const regionDisplay = document.getElementById('regionDisplay');
+            const selectedValue = regionSelect.value;
+            
+            if (selectedValue) {
+                regionDisplay.textContent = selectedValue;
+                regionDisplay.style.display = 'block';
+                regionSelect.style.display = 'none';
+            } else {
+                regionDisplay.textContent = '未选择地区';
+                regionDisplay.style.display = 'block';
+                regionSelect.style.display = 'none';
+            }
+        }
+        
+        // 地区选择变化时更新显示
+        document.getElementById('region').addEventListener('change', function() {
+            updateRegionDisplay();
+        });
+
+        // 导航功能（与主页保持一致）
+        function navigateTo(page) {
+            const pageMap = {
+                'dashboard': 'dashboard',
+                'recognition': 'recognition',
+                'records': 'records',
+                'knowledge': 'knowledge',
+                'profile': 'profile'
+            };
+            
+            const pageKey = pageMap[page] || page;
+            
+            switch(pageKey) {
+                case 'dashboard':
+                    window.location.href = '../Part1/dashboard.html';
+                    break;
+                case 'recognition':
+                    window.location.href = '../Intelligent_recognition.html';
+                    break;
+                case 'records':
+                    window.location.href = '../Identification_record.html';
+                    break;
+                case 'knowledge':
+                    window.location.href = '../Part2/Crop Disease Knowledge Base.html';
+                    break;
+                case 'profile':
+                    window.location.href = 'profile.html';
+                    break;
+                case 'help':
+                    alert('正在跳转到使用帮助页面...');
+                    break;
+                case 'privacy':
+                    alert('正在跳转到隐私政策页面...');
+                    break;
+                default:
+                    console.log(`未知页面: ${page}`);
+            }
+        }
+        
+        // 个人信息页面的功能函数
+        function triggerAvatarUpload() {
+            document.getElementById('avatarUpload').click();
+        }
+        
+        function changePassword() {
+            alert('正在跳转到修改密码页面...');
+        }
+        
+        function exportData() {
+            alert('正在导出用户数据...');
+        }
+        
+        function toggleEditMode(section) {
+            const form = document.getElementById(`${section}Form`);
+            const inputs = form.querySelectorAll('input, select');
+            const editBtn = form.closest('.section-card').querySelector('.edit-btn');
+            const buttons = document.getElementById(`${section}Buttons`);
+            const regionDisplay = document.getElementById('regionDisplay');
+            const regionSelect = document.getElementById('region');
+            
+            if (form.querySelector('input:disabled')) {
+                // 启用编辑
+                inputs.forEach(input => input.disabled = false);
+                editBtn.innerHTML = '<i class="fas fa-times"></i> 取消';
+                editBtn.classList.add('cancel-mode');
+                buttons.style.display = 'flex';
+                
+                // 显示下拉框，隐藏显示框
+                regionDisplay.style.display = 'none';
+                regionSelect.style.display = 'block';
+            } else {
+                // 取消编辑
+                inputs.forEach(input => input.disabled = true);
+                editBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
+                editBtn.classList.remove('cancel-mode');
+                buttons.style.display = 'none';
+                
+                // 显示显示框，隐藏下拉框
+                updateRegionDisplay();
+            }
+        }
+        
+        function cancelEdit(section) {
+            const form = document.getElementById(`${section}Form`);
+            const inputs = form.querySelectorAll('input, select');
+            const editBtn = form.closest('.section-card').querySelector('.edit-btn');
+            const buttons = document.getElementById(`${section}Buttons`);
+            const regionDisplay = document.getElementById('regionDisplay');
+            const regionSelect = document.getElementById('region');
+            
+            inputs.forEach(input => input.disabled = true);
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
+            editBtn.classList.remove('cancel-mode');
+            buttons.style.display = 'none';
+            
+            // 显示显示框，隐藏下拉框
+            regionDisplay.style.display = 'block';
+            regionSelect.style.display = 'none';
+            
+            // 重置表单值
+            form.reset();
+            updateRegionDisplay();
+        }
+        
+        // 表单提交处理
+        document.getElementById('basicInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 这里应该发送数据到后端API
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                region: document.getElementById('region').value, // 现在存储的是"大区/具体地区"
+                birthDate: document.getElementById('birthDate').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('userEmail').textContent,
+                scanCount: parseInt(document.getElementById('scanCount').textContent),
+                projectCount: parseInt(document.getElementById('projectCount').textContent)
+            };
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            document.getElementById('userName').textContent = userData.fullName;
+            
+            alert('基本信息已保存！');
+            toggleEditMode('basicInfo');
+        });
+        
+        // 头像上传处理
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB限制
+                    alert('图片大小不能超过5MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('userAvatar').src = event.target.result;
+                    alert('头像上传成功！');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 加载最近活动
+        function loadRecentActivities() {
+            const activities = [
+                {
+                    icon: 'fas fa-search',
+                    title: '病虫害识别',
+                    description: '识别了番茄晚疫病',
+                    time: '2小时前'
+                },
+                {
+                    icon: 'fas fa-chart-line',
+                    title: '数据分析',
+                    description: '查看了7月份识别报告',
+                    time: '昨天'
+                },
+                {
+                    icon: 'fas fa-upload',
+                    title: '数据上传',
+                    description: '上传了10张样本图片',
+                    time: '3天前'
+                },
+                {
+                    icon: 'fas fa-user-friends',
+                    title: '团队协作',
+                    description: '与团队成员讨论项目进展',
+                    time: '5天前'
+                }
+            ];
+            
+            const container = document.getElementById('recentActivities');
+            container.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityElement = document.createElement('div');
+                activityElement.className = 'activity-item';
+                activityElement.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.description}</p>
+                    </div>
+                    <div class="activity-time">
+                        ${activity.time}
+                    </div>
+                `;
+                container.appendChild(activityElement);
+            });
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 这里可以添加其他事件监听器
+        }
+    </script>
+</body>
+</html>

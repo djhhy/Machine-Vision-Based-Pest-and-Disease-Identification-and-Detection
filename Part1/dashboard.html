@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据看板 - 病虫害识别系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 导航栏样式修改 - 改为蓝色背景 */
+        .navbar {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-menu a {
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: #e0e7ff;
+            transform: translateY(-2px);
+        }
+        
+        /* 页脚样式 */
+        .dashboard-footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 1.5rem; /* 缩短了距离 */
+            width: 100%;
+        }
+        
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        
+        .footer-links a:hover {
+            color: #111827;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-section" style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="logo-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #2563eb; font-size: 20px;">
+                    🌿
+                </div>
+                <div class="logo-text" style="display: flex; flex-direction: column;">
+                    <h1 style="font-size: 1.25rem; font-weight: 700; color: white; margin: 0; line-height: 1.2;">
+                        智慧农业病虫害识别系统
+                    </h1>
+                    <p style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.9); margin: 0;">
+                        Agricultural Disease Detection System
+                    </p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> 首页</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> 数据看板</h1>
+            <div class="date-filter">
+                <button class="filter-btn active" data-period="week">本周</button>
+                <button class="filter-btn" data-period="month">本月</button>
+                <button class="filter-btn" data-period="quarter">本季度</button>
+                <button class="filter-btn" data-period="year">今年</button>
+                <input type="date" id="customDate" class="date-picker">
+            </div>
+        </div>
+
+        <!-- 关键指标 -->
+        <div class="metrics-grid">
+            <div class="metric-card metric-primary">
+                <div class="metric-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>总识别次数</h3>
+                    <p class="metric-value" id="totalScans">1,248</p>
+                    <p class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 12.5% 较上周
+                    </p>
+                </div>
+            </div>
+
+            <div class="metric-card metric-success">
+                <div class="metric-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>识别准确率</h3>
+                    <p class="metric-value" id="accuracyRate">94.2%</p>
+                    <p class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 2.3% 较上周
+                    </p>
+                </div>
+            </div>
+
+            <div class="metric-card metric-warning">
+                <div class="metric-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>病虫害种类</h3>
+                    <p class="metric-value" id="diseaseCount">28</p>
+                    <p class="metric-change positive">
+                        <i class="fas fa-plus"></i> 新增3种
+                    </p>
+                </div>
+            </div>
+
+            <div class="metric-card metric-info">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>平均处理时间</h3>
+                    <p class="metric-value" id="avgProcessTime">1.8s</p>
+                    <p class="metric-change negative">
+                        <i class="fas fa-arrow-down"></i> 0.4s 优化
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="charts-container">
+            <div class="chart-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> 识别数量趋势</h3>
+                        <select class="chart-select" id="trendChartSelect">
+                            <option value="daily">每日趋势</option>
+                            <option value="weekly">每周趋势</option>
+                            <option value="monthly">每月趋势</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> 病虫害分布</h3>
+                        <select class="chart-select" id="distributionChartSelect">
+                            <option value="category">按类别分布</option>
+                            <option value="severity">按严重程度</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-area"></i> 准确率变化</h3>
+                        <div class="legend">
+                            <span class="legend-item">
+                                <i class="fas fa-circle" style="color: #3498db"></i> 模型准确率
+                            </span>
+                            <span class="legend-item">
+                                <i class="fas fa-circle" style="color: #2ecc71"></i> 人工复核准确率
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-map-marker-alt"></i> 地区疾病分布</h3>
+                        <select class="chart-select" id="regionChartSelect">
+                            <option value="density">各地区疾病密度</option>
+                            <option value="distribution">疾病分布详情</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="regionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新增一行：病虫害高发地区图表 -->
+            <div class="chart-row">
+                <div class="chart-card" style="grid-column: 1 / -1;">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-map"></i> 病虫害高发地区分布</h3>
+                        <button class="refresh-btn" onclick="refreshHotSpots()">
+                            <i class="fas fa-sync-alt"></i> 刷新数据
+                        </button>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="hotSpotsChart"></canvas>
+                    </div>
+                    <div style="padding: 0 20px 20px 20px; font-size: 14px; color: #666;">
+                        <br><br>
+                        <p><i class="fas fa-info-circle"></i> 本图显示每种病虫害在哪个地区分布最集中，便于制定针对性防治策略</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <p>© 2025 燕山大学 智慧农业病虫害识别系统 v2.3.1</p>
+            <div class="footer-links">
+                <a onclick="navigateTo('help')">使用帮助</a>
+                <a onclick="navigateTo('privacy')">隐私政策</a>
+                <a onclick="navigateTo('knowledge')">知识库</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // 导航功能（与主页保持一致）
+        function navigateTo(page) {
+            const pageMap = {
+                'dashboard': 'dashboard',
+                'recognition': 'recognition',
+                'records': 'records',
+                'knowledge': 'knowledge',
+                'profile': 'profile'
+            };
+            
+            const pageKey = pageMap[page] || page;
+            
+            switch(pageKey) {
+                case 'dashboard':
+                    window.location.href = 'dashboard.html';
+                    break;
+                case 'recognition':
+                    window.location.href = '../Intelligent_recognition.html';
+                    break;
+                case 'records':
+                    window.location.href = '../Identification_record.html';
+                    break;
+                case 'knowledge':
+                    window.location.href = '../Part2/Crop Disease Knowledge Base.html';
+                    break;
+                case 'profile':
+                    window.location.href = 'profile.html';
+                    break;
+                case 'help':
+                    alert('正在跳转到使用帮助页面...');
+                    break;
+                case 'privacy':
+                    alert('正在跳转到隐私政策页面...');
+                    break;
+                default:
+                    console.log(`未知页面: ${page}`);
+            }
+        }
+        
+        // 刷新热点图数据（占位函数）
+        function refreshHotSpots() {
+            alert('正在刷新病虫害高发地区数据...');
+            // 这里可以添加实际的刷新逻辑
+        }
+    </script>
+</body>
+</html>

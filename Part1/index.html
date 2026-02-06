@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧农业病虫害识别系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 专业配色方案 - 农业绿色主题 */
+            --primary: #2ECC71;
+            --primary-dark: #27AE60;
+            --primary-light: #A8E6CF;
+            --secondary: #3498DB;
+            --secondary-dark: #2980B9;
+            --accent: #F39C12;
+            --accent-dark: #E67E22;
+            --success: #1ABC9C;
+            --warning: #F1C40F;
+            --danger: #E74C3C;
+            --dark: #2C3E50;
+            --dark-light: #34495E;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --text-light: #95A5A6;
+            --border-color: #BDC3C7;
+            
+            /* 渐变色 */
+            --gradient-primary: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            --gradient-secondary: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            --gradient-accent: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+            --gradient-success: linear-gradient(135deg, #1ABC9C 0%, #16A085 100%);
+            --gradient-dark: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            --gradient-overlay: linear-gradient(135deg, rgba(46, 204, 113, 0.95) 0%, rgba(39, 174, 96, 0.95) 100%);
+            
+            /* 阴影 */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+            --shadow-colored: 0 8px 32px rgba(46, 204, 113, 0.25);
+            
+            /* 圆角 */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-shape:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            background: var(--gradient-primary);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-shape:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: var(--gradient-secondary);
+            bottom: -150px;
+            left: -100px;
+            animation-delay: -7s;
+        }
+
+        .bg-shape:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: var(--gradient-accent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.75rem 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-section:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: var(--shadow-colored);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .logo-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            position: relative;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+            background: rgba(46, 204, 113, 0.08);
+        }
+
+        .nav-menu a.active {
+            color: var(--primary);
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        /* 用户区域 */
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info p {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info span {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* 设置按钮 */
+        .settings-btn {
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .settings-btn:hover {
+            color: var(--primary);
+            background: rgba(46, 204, 113, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .settings-btn::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 8px;
+            right: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .settings-btn.has-updates::after {
+            opacity: 1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-secondary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid var(--white);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 英雄横幅 - 全宽居中设计 */
+        .hero-banner {
+            position: relative;
+            background: var(--gradient-overlay);
+            border-radius: var(--radius-xl);
+            padding: 5rem 4rem;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            color: var(--white);
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-content h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 2px solid var(--white);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* 主要内容布局 - 左右分栏 */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* 左侧主要内容 */
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* 功能模块区域 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .module-card:nth-child(2)::before { background: var(--gradient-secondary); }
+        .module-card:nth-child(3)::before { background: var(--gradient-accent); }
+        .module-card:nth-child(4)::before { background: var(--gradient-success); }
+
+        .module-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-card:nth-child(1) .module-icon { background: var(--gradient-primary); }
+        .module-card:nth-child(2) .module-icon { background: var(--gradient-secondary); }
+        .module-card:nth-child(3) .module-icon { background: var(--gradient-accent); }
+        .module-card:nth-child(4) .module-icon { background: var(--gradient-success); }
+
+        .module-card:hover .module-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .module-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .module-arrow {
+            font-size: 1.5rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover .module-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .module-card:nth-child(1) .module-arrow { color: var(--primary); }
+        .module-card:nth-child(2) .module-arrow { color: var(--secondary); }
+        .module-card:nth-child(3) .module-arrow { color: var(--accent); }
+        .module-card:nth-child(4) .module-arrow { color: var(--success); }
+
+        .module-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .feature-tags {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .module-card:nth-child(1):hover .feature-tag {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--primary);
+        }
+
+        .module-card:nth-child(2):hover .feature-tag {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+        }
+
+        .module-card:nth-child(3):hover .feature-tag {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--accent);
+        }
+
+        .module-card:nth-child(4):hover .feature-tag {
+            background: rgba(26, 188, 156, 0.1);
+            color: var(--success);
+        }
+
+        /* 系统特性 */
+        .features-showcase {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-item-icon {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-item:nth-child(1) .feature-item-icon { background: var(--gradient-primary); }
+        .feature-item:nth-child(2) .feature-item-icon { background: var(--gradient-secondary); }
+        .feature-item:nth-child(3) .feature-item-icon { background: var(--gradient-accent); }
+        .feature-item:nth-child(4) .feature-item-icon { background: var(--gradient-success); }
+
+        .feature-item-content h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .feature-item-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* 右侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: sticky;
+            top: 100px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+
+        /* 活动列表 */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .activity-item:hover {
+            background: rgba(46, 204, 113, 0.08);
+            border-left-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            color: var(--white);
+        }
+
+        .activity-item:nth-child(1) .activity-icon { background: var(--gradient-primary); }
+        .activity-item:nth-child(2) .activity-icon { background: var(--gradient-secondary); }
+        .activity-item:nth-child(3) .activity-icon { background: var(--gradient-accent); }
+        .activity-item:nth-child(4) .activity-icon { background: var(--gradient-success); }
+
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-content p {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .activity-content span {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* 快速操作 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            padding: 1.25rem 1rem;
+            background: var(--light);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: var(--white);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-btn i {
+            font-size: 1.75rem;
+            color: var(--primary);
+        }
+
+        .action-btn span {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        /* 统计卡片 */
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(46, 204, 113, 0.08);
+            transform: translateX(5px);
+        }
+
+        .stat-item-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-item-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-item.highlight {
+            background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+            border-left: 3px solid var(--primary);
+        }
+
+        .stat-item.highlight .stat-item-value {
+            color: var(--primary);
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--gradient-dark);
+            color: var(--white);
+            margin-top: 4rem;
+            padding: 2.5rem 0 1.5rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-brand h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links-list {
+            list-style: none;
+        }
+
+        .footer-links-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links-list a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links-list a:hover {
+            color: var(--white);
+            padding-left: 0.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features-showcase {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-content h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                padding: 0 1rem;
+            }
+
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .hero-banner {
+                padding: 3rem 2rem;
+            }
+
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text h1 {
+                font-size: 1.25rem;
+            }
+
+            .logo-text p {
+                font-size: 0.75rem;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* 加载动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* 脉冲动画 */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景 -->
+    <div class="animated-bg">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-content">
+            <div class="logo-section" onclick="navigateTo('首页')">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">
+                    <h1>智慧农业病虫害识别系统</h1>
+                    <p>Agricultural Disease Detection System</p>
+                </div>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <ul class="nav-menu">
+                <li><a href="#" onclick="navigateTo('数据看板')" class="active"><i class="fas fa-chart-line"></i> 数据看板</a></li>
+                <li><a href="#" onclick="navigateTo('智能识别')"><i class="fas fa-camera"></i> 智能识别</a></li>
+                <li><a href="#" onclick="navigateTo('识别记录')"><i class="fas fa-history"></i> 识别记录</a></li>
+                <li><a href="#" onclick="navigateTo('病害知识库')"><i class="fas fa-book"></i> 知识库</a></li>
+            </ul>
+            
+            <!-- 用户区域 -->
+            <div class="user-section">
+                <div class="user-info">
+                    <p>欢迎回来，李四</p>
+                    <span><i class="far fa-clock"></i> 上次登录: 2小时前</span>
+                </div>
+                <button class="settings-btn" onclick="navigateTo('系统设置')" title="系统设置">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-avatar" onclick="navigateTo('个人信息')">李</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 英雄横幅 -->
+        <div class="hero-banner animate-fade-in-up">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-certificate"></i> AI驱动 · 专业可靠
+                </div>
+                <h2>🌾 开启智能农业新时代</h2>
+                <p>基于深度学习的农作物病虫害智能诊断平台，帮助您精准识别、快速响应、科学防治，守护每一片绿色田野</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="navigateTo('智能识别')">
+                        <i class="fas fa-camera"></i>
+                        <span>立即开始识别</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="navigateTo('病害知识库')">
+                        <i class="fas fa-book"></i>
+                        <span>浏览知识库</span>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">1,247</div>
+                        <div class="stat-label">今日识别次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">93.8%</div>
+                        <div class="stat-label">识别准确率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">45.8K</div>
+                        <div class="stat-label">累计识别量</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容布局 -->
+        <div class="content-wrapper">
+            <!-- 左侧主要内容 -->
+            <div class="main-section">
+                <!-- 功能模块区域 -->
+                <div>
+                    <div class="section-header">
+                        <h2 class="section-title">核心功能</h2>
+                    </div>
+                    <div class="modules-grid">
+                        <!-- 数据看板 -->
+                        <div class="module-card" onclick="navigateTo('数据看板')">
+                            <div class="module-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="module-title">
+                                <span>数据看板</span>
+                                <span class="module-arrow">→</span>
+                            </div>
+                            <p class="module-desc">全方位的系统运行监控和数据分析，实时掌握识别统计信息和趋势变化</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">实时监控</span>
+                                <span class="feature-tag">数据统计</span>
+                                <span class="feature-tag">趋势分析</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 智能识别 -->
+                        <div class="module-card" onclick="navigateTo('智能识别')">
+                            <div class="module-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <div class="module-title">
+                                <span>智能识别</span>
+                                <span class="module-arrow">→</span>
+                            </div>
+                            <p class="module-desc">上传作物图片即可快速识别病虫害类型，获取精准的分析结果和防治建议</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">快速识别</span>
+                                <span class="feature-tag">精准分析</span>
+                                <span class="feature-tag">防治建议</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 识别记录 -->
+                        <div class="module-card" onclick="navigateTo('识别记录')">
+                            <div class="module-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="module-title">
+                                <span>识别记录</span>
+                                <span class="module-arrow">→</span>
+                            </div>
+                            <p class="module-desc">查看历史识别记录和详细分析报告，追踪作物健康状况的时间变化</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">历史查询</span>
+                                <span class="feature-tag">数据导出</span>
+                                <span class="feature-tag">结果对比</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 知识库 -->
+                        <div class="module-card" onclick="navigateTo('病害知识库')">
+                            <div class="module-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="module-title">
+                                <span>病害知识库</span>
+                                <span class="module-arrow">→</span>
+                            </div>
+                            <p class="module-desc">全面的农作物病害信息库，提供专业的防治方法和科学的预防措施</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">病害百科</span>
+                                <span class="feature-tag">防治指南</span>
+                                <span class="feature-tag">预防措施</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统特性 -->
+                <div>
+                    <div class="section-header">
+                        <h2 class="section-title">系统特性</h2>
+                    </div>
+                    <div class="features-showcase">
+                        <div class="feature-item">
+                            <div class="feature-item-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="feature-item-content">
+                                <h4>快速识别</h4>
+                                <p>深度学习算法，平均响应时间小于200ms</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="feature-item-content">
+                                <h4>高准确率</h4>
+                                <p>基于百万级数据集，识别准确率达93.8%</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="feature-item-content">
+                                <h4>知识丰富</h4>
+                                <p>涵盖500+种病害，1000+防治方案</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <div class="feature-item-content">
+                                <h4>多作物支持</h4>
+                                <p>支持20+种常见农作物病虫害识别</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧边栏 -->
+            <div class="sidebar">
+                <!-- 快速操作 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">快速操作</h3>
+                        <div class="card-icon" style="background: var(--gradient-accent);">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="navigateTo('智能识别')">
+                            <i class="fas fa-upload"></i>
+                            <span>上传图片</span>
+                        </button>
+                        <button class="action-btn" onclick="navigateTo('识别记录')">
+                            <i class="fas fa-file-alt"></i>
+                            <span>查看报告</span>
+                        </button>
+                        <button class="action-btn" onclick="navigateTo('病害知识库')">
+                            <i class="fas fa-book"></i>
+                            <span>知识库</span>
+                        </button>
+                        <button class="action-btn" onclick="navigateTo('数据看板')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>数据看板</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 统计数据 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">系统统计</h3>
+                        <div class="card-icon" style="background: var(--gradient-primary);">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="stats-list">
+                        <div class="stat-item">
+                            <span class="stat-item-label">病害种类</span>
+                            <span class="stat-item-value">500+</span>
+                        </div>
+                        <div class="stat-item highlight">
+                            <span class="stat-item-label">本月查询</span>
+                            <span class="stat-item-value">1,248</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-item-label">防治方案</span>
+                            <span class="stat-item-value">1,200+</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-item-label">用户数量</span>
+                            <span class="stat-item-value">2,847</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <h3>🌱 智慧农业病虫害识别系统</h3>
+                    <p>基于人工智能技术的农业病虫害智能诊断平台，为现代农业提供科技支撑，助力农业现代化发展。</p>
+                    <p style="margin-top: 1rem; font-size: 0.875rem;">
+                        <i class="fas fa-university"></i> 燕山大学 | 版本 v2.3.1
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="#" onclick="navigateTo('数据看板')"><i class="fas fa-chevron-right"></i> 数据看板</a></li>
+                        <li><a href="#" onclick="navigateTo('智能识别')"><i class="fas fa-chevron-right"></i> 智能识别</a></li>
+                        <li><a href="#" onclick="navigateTo('识别记录')"><i class="fas fa-chevron-right"></i> 识别记录</a></li>
+                        <li><a href="#" onclick="navigateTo('病害知识库')"><i class="fas fa-chevron-right"></i> 知识库</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>帮助支持</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="#" onclick="navigateTo('系统设置')"><i class="fas fa-chevron-right"></i> 系统设置</a></li>
+                        <li><a href="#" onclick="navigateTo('个人信息')"><i class="fas fa-chevron-right"></i> 个人信息</a></li>
+                        <li><a href="#" onclick="showNotification('正在跳转到使用帮助...')"><i class="fas fa-chevron-right"></i> 使用帮助</a></li>
+                        <li><a href="#" onclick="showNotification('正在跳转到联系我们...')"><i class="fas fa-chevron-right"></i> 联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 燕山大学智慧农业病虫害识别系统. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航功能
+        function navigateTo(page) {
+            const pageMap = {
+                '首页': 'index.html',
+                '数据看板': 'Part1/dashboard.html',
+                '智能识别': 'Intelligent_recognition.html',
+                '识别记录': 'Identification_record.html',
+                '病害知识库': 'Part2/index.html',
+                '个人信息': 'Part1/profile.html',
+                '系统设置': 'Part1/settings.html'
+            };
+            
+            const url = pageMap[page];
+            if (url) {
+                window.location.href = url;
+            } else {
+                console.log(`未知页面: ${page}`);
+            }
+        }
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 页面加载动画
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('智慧农业病虫害识别系统已加载');
+            
+            // 为卡片添加交错动画
+            const cards = document.querySelectorAll('.module-card, .feature-item, .card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+
+            // 统计数字动画
+            animateNumbers();
+            
+            // 检查设置更新
+            checkSettingsUpdates();
+        });
+
+        // 数字动画效果
+        function animateNumbers() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const targetText = stat.textContent;
+                const hasPercentage = targetText.includes('%');
+                const hasK = targetText.includes('K');
+                const targetNumber = parseFloat(targetText.replace(/[^\d.]/g, ''));
+                
+                let current = 0;
+                const increment = targetNumber / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= targetNumber) {
+                        current = targetNumber;
+                        clearInterval(timer);
+                    }
+                    
+                    let displayValue = current.toFixed(hasPercentage ? 1 : 0);
+                    if (hasK) displayValue += 'K';
+                    if (hasPercentage) displayValue += '%';
+                    
+                    stat.textContent = displayValue.replace('K%', 'K');
+                }, 30);
+            });
+        }
+
+        // 检查设置更新
+        function checkSettingsUpdates() {
+            const settingsBtn = document.querySelector('.settings-btn');
+            const settings = JSON.parse(localStorage.getItem('userSettings')) || {};
+            
+            // 如果有需要更新的设置，添加提示
+            if (settings.needUpdate) {
+                settingsBtn.classList.add('has-updates');
+            }
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // 添加样式
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                z-index: 1000;
+                background: ${type === 'success' ? '#2ecc71' : '#3498db'};
+                transform: translateX(100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示通知
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+                notification.style.opacity = '1';
+            }, 100);
+            
+            // 3秒后移除通知
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // 防止页面链接的默认行为
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能识别 - 农作物病虫害识别系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f9fafb 100%);
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info p {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .user-info span {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-image: url('Part1/images/default-avatar.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            object-fit: cover;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* 页面标题区域 */
+        .page-header {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 2rem;
+        }
+
+        /* 上传区域 */
+        .upload-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #f9fafb;
+        }
+
+        .upload-area:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .upload-area.active {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .upload-area p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .supported-formats {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        /* 识别结果区域 */
+        .result-section {
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .result-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .image-preview {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .image-preview h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .image-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .result-details {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-details h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        /* 加载动画 */
+        .loading-state {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading-state.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        /* 结果卡片 */
+        .result-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left-color: #f59e0b;
+        }
+
+        .result-card.danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left-color: #ef4444;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: #059669;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-card.warning .result-label {
+            color: #d97706;
+        }
+
+        .result-card.danger .result-label {
+            color: #dc2626;
+        }
+
+        .result-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #047857;
+        }
+
+        .result-card.warning .result-value {
+            color: #b45309;
+        }
+
+        .result-card.danger .result-value {
+            color: #b91c1c;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        /* 详细信息卡片 */
+        .info-card {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card p {
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .info-card ul {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* 反馈模态框 */
+        .feedback-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .modal-icon.success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .modal-icon.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .modal-body p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #059669;
+        }
+
+        .modal-btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* 错误报告表单 */
+        .error-form {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .error-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        /* 最近识别历史 */
+        .quick-history {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .quick-history h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .history-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-thumb {
+            width: 100%;
+            height: 100px;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .history-item p {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-item strong {
+            font-size: 0.875rem;
+            color: #111827;
+        }
+
+        /* 页脚 */
+        footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #111827;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .result-container {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .history-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo-section">
+                <div class="logo-icon">🌿</div>
+                <div class="logo-text">
+                    <h1>智慧农业病虫害识别系统</h1>
+                    <p>Agricultural Disease Detection System</p>
+                </div>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <p>欢迎回来</p>
+                    <span>上次登录: 2小时前</span>
+                </div>
+                <div class="user-avatar"><a href="Part1/profile.html">韩</a></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题区域 -->
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()">
+            ← 返回
+        </button>
+        <h1 class="page-title">智能识别</h1>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 上传区域 -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📷</div>
+                <h3>上传作物图片进行识别</h3>
+                <p>支持 JPG、PNG、JPEG 格式，文件大小不超过 10MB</p>
+                <input type="file" id="imageInput" accept="image/*">
+                <button class="upload-btn" onclick="document.getElementById('imageInput').click()">
+                    📁 选择图片
+                </button>
+                <div class="supported-formats">
+                    或直接拖拽图片到此区域
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <p>正在分析图像，请稍候...</p>
+            <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.5rem;">
+                AI 模型正在处理中
+            </p>
+        </div>
+
+        <!-- 识别结果区域 -->
+        <div class="result-section" id="resultSection">
+            <div class="result-container">
+                <!-- 左侧：图片预览 -->
+                <div class="image-preview">
+                    <h3>上传的图像</h3>
+                    <img id="previewImage" class="preview-image" alt="预览图片">
+                    <div class="image-info">
+                        <span>文件名: <strong id="fileName">-</strong></span>
+                        <span>大小: <strong id="fileSize">-</strong></span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetUpload()" style="width: 100%; margin-top: 1rem;">
+                        🔄 重新上传
+                    </button>
+                </div>
+
+                <!-- 右侧：识别结果 -->
+                <div class="result-details">
+                    <h3>识别结果</h3>
+
+                    <!-- 病害名称 -->
+                    <div class="result-card">
+                        <div class="result-label">检测病害</div>
+                        <div class="result-value" id="diseaseName">番茄早疫病</div>
+                    </div>
+
+                    <!-- 置信度 -->
+                    <div class="result-card">
+                        <div class="result-label">置信度</div>
+                        <div class="result-value" id="confidence">94.2%</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- 严重程度 -->
+                    <div class="result-card warning">
+                        <div class="result-label">严重程度</div>
+                        <div class="result-value" id="severity">中度</div>
+                    </div>
+
+                    <!-- 病原体 -->
+                    <div class="info-card">
+                        <h4>病原体</h4>
+                        <p id="pathogen">链格孢菌</p>
+                    </div>
+
+                    <!-- 发生条件 -->
+                    <div class="info-card">
+                        <h4>发生条件</h4>
+                        <p id="occurrence">温度20-25℃，相对湿度80%以上时易发生</p>
+                    </div>
+
+                    <!-- 防治建议 -->
+                    <div class="info-card">
+                        <h4>防治建议</h4>
+                        <p id="treatment">建议使用代森锰锌600-800倍液或百菌清500倍液进行喷雾防治</p>
+                    </div>
+
+                    <!-- 预防措施 -->
+                    <div class="info-card">
+                        <h4>预防措施</h4>
+                        <ul id="preventionList">
+                            <li>合理密植，保证通风透光</li>
+                            <li>及时整枝打杈，清除病残体</li>
+                            <li>增施磷钾肥，提高植株抗病性</li>
+                            <li>定期检查，发现病叶及时摘除</li>
+                        </ul>
+                    </div>
+
+                    <!-- 安全间隔期 -->
+                    <div class="info-card">
+                        <h4>安全间隔期</h4>
+                        <p id="safetyPeriod">采收前7天停止用药</p>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="confirmResult()">
+                            ✓ 识别正确
+                        </button>
+                        <button class="btn btn-danger" onclick="showErrorReport()">
+                            ✗ 识别错误
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近识别历史 -->
+        <div class="quick-history">
+            <h3>最近识别记录</h3>
+            <div class="history-grid">
+                <div class="history-item" onclick="loadHistoryItem('番茄早疫病')">
+                    <div class="history-thumb">🍅</div>
+                    <p>2分钟前</p>
+                    <strong>番茄早疫病</strong>
+                </div>
+                <div class="history-item" onclick="loadHistoryItem('水稻纹枯病')">
+                    <div class="history-thumb">🌾</div>
+                    <p>15分钟前</p>
+                    <strong>水稻纹枯病</strong>
+                </div>
+                <div class="history-item" onclick="loadHistoryItem('玉米锈病')">
+                    <div class="history-thumb">🌽</div>
+                    <p>1小时前</p>
+                    <strong>玉米锈病</strong>
+                </div>
+                <div class="history-item" onclick="loadHistoryItem('健康叶片')">
+                    <div class="history-thumb">✅</div>
+                    <p>2小时前</p>
+                    <strong>健康叶片</strong>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 燕山大学 智慧农业病虫害识别系统 v2.3.1</p>
+            <div class="footer-links">
+                <a href="#" onclick="navigateTo('help')">使用帮助</a>
+                <a href="#" onclick="navigateTo('privacy')">隐私政策</a>
+                <a href="#" onclick="navigateTo('knowledge')">知识库</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 反馈模态框 -->
+    <div class="feedback-modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon success" id="modalIcon">
+                    ✓
+                </div>
+                <h3 id="modalTitle">感谢反馈！</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">您的反馈将帮助我们改进识别模型。</p>
+                
+                <!-- 错误报告表单 -->
+                <div class="error-form" id="errorForm">
+                    <div class="form-group">
+                        <label class="form-label" for="correctDisease">正确的病害名称</label>
+                        <input type="text" id="correctDisease" class="form-input" placeholder="请输入正确的病害名称">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="userComment">补充说明（可选）</label>
+                        <textarea id="userComment" class="form-input" rows="3" placeholder="请描述具体情况..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="modalCancelBtn" onclick="closeModal()">
+                    取消
+                </button>
+                <button class="modal-btn modal-btn-primary" id="modalActionBtn" onclick="handleModalAction()">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航功能
+        function navigateTo(page) {
+            const pageMap = {
+                '知识库': 'knowledge',
+                '使用帮助': 'help',
+                '隐私政策': 'privacy'
+            };
+            
+            const pageKey = pageMap[page] || page;
+            
+            switch(pageKey) {
+                case 'knowledge':
+                    window.location.href = '../index.html';
+                    break;
+                case 'help':
+                    alert('正在跳转到使用帮助页面...');
+                    break;
+                case 'privacy':
+                    alert('正在跳转到隐私政策页面...');
+                    break;
+                default:
+                    console.log(`未知页面: ${page}`);
+            }
+        }
+
+        // 全局变量
+        let uploadedFile = null;
+        let currentFeedbackType = ''; // 'correct' 或 'error'
+
+        // 返回按钮
+        function goBack() {
+            window.history.back();
+        }
+
+        // 文件上传处理
+        const imageInput = document.getElementById('imageInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadSection = document.getElementById('uploadSection');
+        const loadingState = document.getElementById('loadingState');
+        const resultSection = document.getElementById('resultSection');
+        const feedbackModal = document.getElementById('feedbackModal');
+        const errorForm = document.getElementById('errorForm');
+
+        // 点击上传
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileUpload(file);
+            }
+        });
+
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('active');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileUpload(file);
+            } else {
+                showMessage('请上传图片文件！', 'error');
+            }
+        });
+
+        // 处理文件上传
+        function handleFileUpload(file) {
+            // 验证文件大小（10MB限制）
+            if (file.size > 10 * 1024 * 1024) {
+                showMessage('文件大小不能超过10MB', 'error');
+                return;
+            }
+
+            uploadedFile = file;
+
+            // 显示加载状态
+            uploadSection.style.display = 'none';
+            loadingState.classList.add('active');
+            resultSection.classList.remove('active');
+
+            // 读取图片
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(2) + ' KB';
+
+                // 模拟AI识别过程（2秒）
+                setTimeout(function() {
+                    showResult();
+                }, 2000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 显示识别结果
+        function showResult() {
+            loadingState.classList.remove('active');
+            resultSection.classList.add('active');
+
+            // 随机生成一个识别结果（模拟）
+            const diseases = [
+                { name: '番茄早疫病', confidence: 94.2, severity: '中度' },
+                { name: '水稻纹枯病', confidence: 87.5, severity: '轻度' },
+                { name: '玉米锈病', confidence: 91.8, severity: '中度' },
+                { name: '黄瓜霜霉病', confidence: 82.3, severity: '严重' },
+                { name: '小麦白粉病', confidence: 89.7, severity: '轻度' }
+            ];
+            
+            const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+            
+            document.getElementById('diseaseName').textContent = randomDisease.name;
+            document.getElementById('confidence').textContent = randomDisease.confidence + '%';
+            document.getElementById('severity').textContent = randomDisease.severity;
+
+            // 动画显示置信度进度条
+            setTimeout(function() {
+                document.getElementById('confidenceFill').style.width = randomDisease.confidence + '%';
+            }, 100);
+        }
+
+        // 重新上传
+        function resetUpload() {
+            uploadSection.style.display = 'block';
+            loadingState.classList.remove('active');
+            resultSection.classList.remove('active');
+            imageInput.value = '';
+            uploadedFile = null;
+        }
+
+        // 确认结果正确
+        function confirmResult() {
+            currentFeedbackType = 'correct';
+            showFeedbackModal(
+                '识别正确',
+                '感谢您确认识别结果！您的反馈将帮助我们优化模型。',
+                'success',
+                '继续识别'
+            );
+        }
+
+        // 显示错误报告
+        function showErrorReport() {
+            currentFeedbackType = 'error';
+            showFeedbackModal(
+                '报告识别错误',
+                '请告诉我们正确的病害信息，我们将持续改进模型。',
+                'error',
+                '提交报告'
+            );
+            errorForm.classList.add('active');
+        }
+
+        // 显示反馈模态框
+        function showFeedbackModal(title, message, type, actionText) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modalIcon').className = 'modal-icon ' + type;
+            document.getElementById('modalIcon').textContent = type === 'success' ? '✓' : '✗';
+            document.getElementById('modalActionBtn').textContent = actionText;
+            document.getElementById('modalCancelBtn').style.display = 'block';
+            
+            // 重置表单
+            if (type === 'error') {
+                errorForm.classList.add('active');
+            } else {
+                errorForm.classList.remove('active');
+            }
+            
+            feedbackModal.classList.add('active');
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            feedbackModal.classList.remove('active');
+            errorForm.classList.remove('active');
+            // 重置表单
+            document.getElementById('correctDisease').value = '';
+            document.getElementById('userComment').value = '';
+        }
+
+        // 处理模态框操作
+        function handleModalAction() {
+            if (currentFeedbackType === 'correct') {
+                handleCorrectFeedback();
+            } else if (currentFeedbackType === 'error') {
+                handleErrorFeedback();
+            }
+        }
+
+        // 处理正确反馈
+        function handleCorrectFeedback() {
+            // 这里可以发送确认数据到后端
+            console.log('识别结果确认为正确');
+            
+            // 显示成功消息
+            showMessage('✓ 识别结果已确认，感谢您的反馈！', 'success');
+            
+            // 关闭模态框并重置页面
+            closeModal();
+            setTimeout(() => {
+                resetUpload();
+            }, 1500);
+        }
+
+        // 处理错误反馈
+        function handleErrorFeedback() {
+            const correctDisease = document.getElementById('correctDisease').value.trim();
+            const userComment = document.getElementById('userComment').value.trim();
+            
+            if (!correctDisease) {
+                showMessage('请输入正确的病害名称', 'error');
+                return;
+            }
+            
+            // 这里可以发送纠错数据到后端
+            const errorReport = {
+                originalResult: document.getElementById('diseaseName').textContent,
+                correctDisease: correctDisease,
+                userComment: userComment,
+                imageFile: uploadedFile ? uploadedFile.name : null,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('错误报告：', errorReport);
+            
+            // 显示提交成功消息
+            showMessage('✓ 错误报告已提交，我们将尽快核实并更新模型！', 'success');
+            
+            // 关闭模态框并重置页面
+            closeModal();
+            setTimeout(() => {
+                resetUpload();
+            }, 1500);
+        }
+
+        // 加载历史记录项
+        function loadHistoryItem(diseaseName) {
+            // 模拟加载历史数据
+            const historyData = {
+                '番茄早疫病': {
+                    name: '番茄早疫病',
+                    confidence: 94.2,
+                    severity: '中度'
+                },
+                '水稻纹枯病': {
+                    name: '水稻纹枯病',
+                    confidence: 87.5,
+                    severity: '轻度'
+                },
+                '玉米锈病': {
+                    name: '玉米锈病',
+                    confidence: 91.8,
+                    severity: '中度'
+                },
+                '健康叶片': {
+                    name: '健康叶片',
+                    confidence: 98.3,
+                    severity: '无'
+                }
+            };
+            
+            const disease = historyData[diseaseName];
+            if (disease) {
+                // 显示结果区域
+                uploadSection.style.display = 'none';
+                loadingState.classList.remove('active');
+                resultSection.classList.add('active');
+                
+                // 更新结果
+                document.getElementById('diseaseName').textContent = disease.name;
+                document.getElementById('confidence').textContent = disease.confidence + '%';
+                document.getElementById('severity').textContent = disease.severity;
+                
+                // 更新图片预览（模拟历史图片）
+                document.getElementById('previewImage').src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%23f3f4f6"/><text x="200" y="150" text-anchor="middle" fill="%239ca3af" font-size="16">历史识别图片：' + diseaseName + '</text></svg>';
+                document.getElementById('fileName').textContent = '历史记录_' + diseaseName + '.jpg';
+                document.getElementById('fileSize').textContent = '1.25 MB';
+                
+                // 动画显示置信度进度条
+                setTimeout(function() {
+                    document.getElementById('confidenceFill').style.width = disease.confidence + '%';
+                }, 100);
+                
+                showMessage('已加载历史识别记录', 'success');
+            }
+        }
+
+        // 显示消息提示
+        function showMessage(message, type) {
+            // 创建消息提示元素
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                z-index: 9999;
+                animation: slideIn 0.3s ease-out;
+                max-width: 400px;
+                font-weight: 500;
+            `;
+            messageEl.textContent = message;
+            
+            document.body.appendChild(messageEl);
+            
+            // 3秒后移除
+            setTimeout(() => {
+                messageEl.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 页脚链接点击事件
+        document.querySelectorAll('.footer-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageText = this.textContent.trim();
+                navigateTo(pageText);
+            });
+        });
+    </script>
+</body>
+</html>
